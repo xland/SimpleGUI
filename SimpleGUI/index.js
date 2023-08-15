@@ -1,6 +1,7 @@
-app.init();
+"use strip";
 
-let windowConfig = {
-    frame
-}
-let window = new Window();
+import * as os from "os";
+(function(g){
+    os.remove("c:\\1.txt");
+    console.log(123);
+})(globalThis);
