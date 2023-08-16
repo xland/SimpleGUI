@@ -22,16 +22,16 @@ JSEnv::JSEnv()
 #endif // DEBUG
     js_init_module_os(ctx, "os");
 
-    //JSModuleDef* m;
-    //m = JS_NewCModule(ctx, "sg", JSEnv::RegModel);
-    //if (!m)
-    //{
-    //    //
-    //    int a = 1;
-    //}
-
+    JSModuleDef* m;
+    m = JS_NewCModule(ctx, "sg", &JSEnv::RegModel);
+    if (!m)
+    {
+        //
+        int a = 1;
+    }
+    auto ret = JS_AddModuleExport(ctx, m, "Window");
+    LoadIndexJs(ctx);  
     
-    LoadIndexJs();
 }
 
 JSEnv::~JSEnv()
@@ -55,11 +55,11 @@ JSEnv* JSEnv::Get()
 
 int JSEnv::RegModel(JSContext* ctx, JSModuleDef* m)
 {
-    Window::Register(ctx);
+    Window::Register(ctx,m);
     return 0;
 }
 
-void JSEnv::LoadIndexJs()
+void JSEnv::LoadIndexJs(JSContext* ctx)
 {
     uint8_t* buf;
     size_t buf_len;

@@ -8,7 +8,7 @@ public:
 	static JSEnv* Get();
 	static int RegModel(JSContext* ctx, JSModuleDef* m);
 	~JSEnv();
-	void LoadIndexJs();
+	static void LoadIndexJs(JSContext* ctx);
 private:
 	JSEnv();
 	JSRuntime* rt;

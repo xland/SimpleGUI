@@ -5,9 +5,8 @@
 class Window
 {
 public:
-	static void Register(JSContext* ctx);
-	static void WindowFinalizer(JSRuntime* rt, JSValue val);
-	static JSValue Close(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv);
+	static void Register(JSContext* ctx, JSModuleDef* m);
+	//static JSValue Close(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv);
 private:
 	
 };
