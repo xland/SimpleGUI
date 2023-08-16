@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "quickjs.h"
 #include "quickjs-libc.h"
 class JSEnv
