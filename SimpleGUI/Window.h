@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include <Windows.h>
 #include <string>
+#include <vector>
 #include "quickjs.h"
+#include <blend2d.h>
 
 class Window
 {
@@ -21,11 +23,14 @@ public:
 	static JSClassID WindowClassId;
 	HWND hwnd;
 private:
-	Window(int x, int y, int width, int height);
+	Window(int x, int y, int width, int height,bool frame,bool shadow,bool visible, bool center,std::wstring title, std::vector<BLBoxI> captionArea);
 	static JSValue WindowNew(JSContext* ctx, JSValueConst jsThis, int argc, JSValueConst* argv);
 	static void WindowFinalizer(JSRuntime* rt, JSValue val);
 	void createWindow();
 	int x, y, width, height;
+	bool frame, shadow , visible,center;
+	std::wstring title;
 	static std::string className;
+	std::vector<BLBoxI> captionArea;
 };
 

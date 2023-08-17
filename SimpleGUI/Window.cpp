@@ -72,11 +72,20 @@ JSValue Window::WindowNew(JSContext* ctx, JSValueConst jsThis, int argc, JSValue
     }
     JSValueConst config = argv[0];
     int x{ 100 }, y{ 100 }, width{ 800 }, height{600};
-    GetPropertyVal(ctx,config,"x", &x);
-    GetPropertyVal(ctx, argv[0], "y", &y);
-    GetPropertyVal(ctx, argv[0], "width", &width);
-    GetPropertyVal(ctx, argv[0], "height", &height);
-    auto s = new Window(x,y,width,height);
+    GetPropertyVal(ctx,config,"x", x);
+    GetPropertyVal(ctx, argv[0], "y", y);
+    GetPropertyVal(ctx, argv[0], "width", width);
+    GetPropertyVal(ctx, argv[0], "height", height);
+    bool frame{ true }, shadow{ true }, visible{ true }, center{true};
+    GetPropertyVal(ctx, argv[0], "frame",frame);
+    GetPropertyVal(ctx, argv[0], "shadow", shadow);
+    GetPropertyVal(ctx, argv[0], "visible", visible);
+    GetPropertyVal(ctx, argv[0], "center", center);
+    std::wstring title{L"SimpleGUI"};
+    GetPropertyVal(ctx, argv[0], "title", title);
+    std::vector<BLBoxI> captionArea;
+    JSValue val = JS_GetPropertyStr(ctx, obj, "");
+    auto s = new Window(x,y,width,height,frame,shadow,visible,center,title, captionArea);
     JS_SetOpaque(obj, s);
     return obj;
 }
@@ -119,11 +128,16 @@ void Window::Register(JSContext* ctx, JSModuleDef* m)
     
 }
 
-Window::Window(int x, int y, int width, int height):
-    x{x},y{y},width{width},height{height}
+Window::Window(int x, int y, int width, int height, bool frame, bool shadow, bool visible,bool center,std::wstring title, std::vector<BLBoxI> captionArea):
+    x{x},y{y},width{width},height{height},
+    frame{ frame }, shadow{ shadow }, visible{ visible }, center{center},
+    title{title},
+    captionArea{captionArea}
 {
     createWindow();
-    Show();
+    if (visible) {
+        Show();
+    }    
 }
 
 LRESULT CALLBACK Window::RouteWindowMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -149,15 +163,29 @@ void Window::createWindow()
     wcx.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     wcx.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcx.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcx.lpszClassName = L"ScreenCapture";
+    wcx.lpszClassName = L"SimpleGUI";
     if (!RegisterClassEx(&wcx))
     {
         MessageBox(NULL, L"注册窗口类失败", L"系统提示", NULL);
         return;
     }
-    hwnd = CreateWindowEx(0, wcx.lpszClassName, wcx.lpszClassName, WS_OVERLAPPEDWINDOW, x, y, width, height, NULL, NULL, hinstance, static_cast<LPVOID>(this));
-    BOOL attrib = TRUE;
-    DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
+    if (center) {
+        RECT rect;
+        SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+        x = (rect.right - width) / 2;
+        y = (rect.bottom - height) / 2;
+    }
+    hwnd = CreateWindowEx(0, wcx.lpszClassName, title.c_str(), WS_OVERLAPPEDWINDOW, x, y, width, height, NULL, NULL, hinstance, static_cast<LPVOID>(this));
+    if (!frame) {
+        BOOL attrib = TRUE;
+        DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
+        if (shadow) {
+            static const MARGINS shadow_state{ 0, 0, 0, 1 };
+            DwmExtendFrameIntoClientArea(hwnd, &shadow_state);
+        }        
+        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+    }
+    
 }
 
 LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -166,11 +194,15 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
     {
         case WM_NCCALCSIZE:
         {
-            return 0;
+            if (wParam == TRUE && !frame) {
+                //这样可以将客户端区域扩展到包括框架在内的窗口大小,但不包括阴影部分
+                return 0;
+            }
+            break;
         }
-        case WM_SETCURSOR: {
-            return 1;
-        }
+        //case WM_SETCURSOR: {
+        //    return 1;
+        //}
         case WM_TIMER: {
             return 1;
         }

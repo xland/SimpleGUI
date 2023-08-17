@@ -1,12 +1,19 @@
-- frame:bool
-- shadow:bool
-- title:string
 - x:number
 - y:number
 - w:number
 - h:number
+
+- frame:bool
+- shadow:bool
+- visible:bool
+- center:bool
+
+- title:string
+
+
 - maxWidth:number
 - maxHeight:number
 - minWidth:number
 - minHeight:number
-- visible:bool
+- captionArea:[{x0,y0,x1,y1}]
+
