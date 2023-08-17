@@ -1,11 +1,12 @@
 - frame:bool
+- shadow:bool
 - title:string
-- width:number
-- height:number
+- x:number
+- y:number
+- w:number
+- h:number
 - maxWidth:number
 - maxHeight:number
 - minWidth:number
 - minHeight:number
-- x:number
-- y:number
 - visible:bool

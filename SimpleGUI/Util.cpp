@@ -10,3 +10,15 @@ void InitDebuger() {
     freopen_s(&stream, "CON", "w", stderr);
 }
 #endif
+bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name,int* out)
+{
+    JSValue val = JS_GetPropertyStr(ctx, obj, name);
+    if (JS_IsException(val)) {
+        return false;
+    }
+    if (JS_IsUndefined(val)) {
+        return false;
+    }
+    JS_ToInt32(ctx, out, val);
+    return true;
+}

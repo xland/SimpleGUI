@@ -153,6 +153,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WindowConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="index.js" />
@@ -161,6 +162,7 @@
     <ClInclude Include="JSEnv.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WindowConfig.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

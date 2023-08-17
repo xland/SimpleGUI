@@ -3,6 +3,7 @@
 #include "Util.h"
 #include <windowsx.h>
 #include "dwmapi.h"
+#include "JSEnv.h"
 
 JSClassID Window::WindowClassId{0};
 std::string Window::className{"Window"};
@@ -18,15 +19,32 @@ static const JSCFunctionListEntry funcs[]{
 void Window::WindowFinalizer(JSRuntime* rt, JSValue val)
 {
     Window* win = (Window*)JS_GetOpaque(val, Window::WindowClassId);
-    //todo js_free_rt已经帮我释放了资源，所以不能再delete，如果有其他指针，得自己调方法释放
+    //todo js_free_rt已经帮我释放了资源，所以不能再delete win了
+    //如果win持有其它指针，得在这里写delete释放
     js_free_rt(rt, win);
 }
 
 JSValue Window::Close(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
 {
-    //todo 要想拿到Window对象指针，就用下面这一句
-    //Window* win = (Window*)JS_GetOpaque(this_val, WindowClassId);
+    Window* win = (Window*)JS_GetOpaque(this_val, WindowClassId);
+    win->Close();
     return JS_NewInt32(ctx,222);
+}
+void Window::Close()
+{
+
+}
+
+JSValue Window::Show(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
+{
+    Window* win = (Window*)JS_GetOpaque(this_val, WindowClassId);
+    win->Show();
+    return JS_NewInt32(ctx, 222);
+}
+void Window::Show()
+{
+    ShowWindow(hwnd, SW_SHOW);
+    UpdateWindow(hwnd);
 }
 
 JSValue Window::AddEventListener(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
@@ -52,7 +70,13 @@ JSValue Window::WindowNew(JSContext* ctx, JSValueConst jsThis, int argc, JSValue
     {
         return obj;
     }
-    auto s = new Window();
+    JSValueConst config = argv[0];
+    int x{ 100 }, y{ 100 }, width{ 800 }, height{600};
+    GetPropertyVal(ctx,config,"x", &x);
+    GetPropertyVal(ctx, argv[0], "y", &y);
+    GetPropertyVal(ctx, argv[0], "width", &width);
+    GetPropertyVal(ctx, argv[0], "height", &height);
+    auto s = new Window(x,y,width,height);
     JS_SetOpaque(obj, s);
     return obj;
 }
@@ -95,11 +119,11 @@ void Window::Register(JSContext* ctx, JSModuleDef* m)
     
 }
 
-Window::Window()
+Window::Window(int x, int y, int width, int height):
+    x{x},y{y},width{width},height{height}
 {
     createWindow();
-    ShowWindow(hwnd, SW_SHOW);
-    UpdateWindow(hwnd);
+    Show();
 }
 
 LRESULT CALLBACK Window::RouteWindowMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -131,7 +155,7 @@ void Window::createWindow()
         MessageBox(NULL, L"注册窗口类失败", L"系统提示", NULL);
         return;
     }
-    hwnd = CreateWindowEx(0, wcx.lpszClassName, wcx.lpszClassName, WS_OVERLAPPEDWINDOW, x, y, w, h, NULL, NULL, hinstance, static_cast<LPVOID>(this));
+    hwnd = CreateWindowEx(0, wcx.lpszClassName, wcx.lpszClassName, WS_OVERLAPPEDWINDOW, x, y, width, height, NULL, NULL, hinstance, static_cast<LPVOID>(this));
     BOOL attrib = TRUE;
     DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
 }

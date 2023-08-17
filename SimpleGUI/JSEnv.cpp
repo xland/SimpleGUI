@@ -2,6 +2,8 @@
 #include "Window.h"
 
 static JSEnv* env;
+JSContext* ctx;
+JSRuntime* rt;
 
 JSEnv::JSEnv()
 {
@@ -51,6 +53,12 @@ void JSEnv::Init()
 JSEnv* JSEnv::Get()
 {
     return env;
+}
+
+
+JSContext* JSEnv::GetContext()
+{
+    return ctx;
 }
 
 int JSEnv::RegModel(JSContext* ctx, JSModuleDef* m)

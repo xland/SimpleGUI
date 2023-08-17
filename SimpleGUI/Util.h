@@ -18,3 +18,5 @@ constexpr JSCFunctionListEntry MakeJsFunc(const char* name, uint8_t length, JSCF
     };
 };
 
+bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name, int* out);
+
