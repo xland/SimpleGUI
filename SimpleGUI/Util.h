@@ -25,4 +25,4 @@ constexpr JSCFunctionListEntry MakeJsFunc(const char* name, uint8_t length, JSCF
 bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name, int& out);
 bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name, bool& out);
 bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name, std::wstring& out);
-bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name, BLBoxI& out);
+bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, BLBoxI& out);

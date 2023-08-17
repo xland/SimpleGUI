@@ -84,7 +84,18 @@ JSValue Window::WindowNew(JSContext* ctx, JSValueConst jsThis, int argc, JSValue
     std::wstring title{L"SimpleGUI"};
     GetPropertyVal(ctx, argv[0], "title", title);
     std::vector<BLBoxI> captionArea;
-    JSValue val = JS_GetPropertyStr(ctx, obj, "");
+    JSValue captionAreaVal = JS_GetPropertyStr(ctx, argv[0], "captionArea");
+    int64_t length{ 0 };
+    JSValue jsLen = JS_GetPropertyLength(ctx, &length, captionAreaVal);
+    for (size_t i = 0; i < length; i++)
+    {
+        JSValue item = JS_GetPropertyUint32(ctx, captionAreaVal, i);
+        BLBoxI box;
+        GetPropertyVal(ctx,item, box);
+        captionArea.push_back(std::move(box));
+        JS_FreeValue(ctx, item);
+    }
+    JS_FreeValue(ctx, captionAreaVal);
     auto s = new Window(x,y,width,height,frame,shadow,visible,center,title, captionArea);
     JS_SetOpaque(obj, s);
     return obj;
@@ -175,11 +186,15 @@ void Window::createWindow()
         x = (rect.right - width) / 2;
         y = (rect.bottom - height) / 2;
     }
-    hwnd = CreateWindowEx(0, wcx.lpszClassName, title.c_str(), WS_OVERLAPPEDWINDOW, x, y, width, height, NULL, NULL, hinstance, static_cast<LPVOID>(this));
+    auto borderlessStyle = WS_POPUP | WS_THICKFRAME | WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX;
+    this->hwnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_WINDOWEDGE, 
+        wcx.lpszClassName, title.c_str(), WS_OVERLAPPEDWINDOW, x, y, width, height, NULL, NULL, hinstance, static_cast<LPVOID>(this));
     if (!frame) {
-        BOOL attrib = TRUE;
-        DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
+        //BOOL attrib = TRUE;
+        //DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
         if (shadow) {
+            auto borderlessStyle = WS_POPUP | WS_THICKFRAME | WS_SYSMENU;; //todo
+            SetWindowLongPtr(hwnd, GWL_STYLE, borderlessStyle);
             static const MARGINS shadow_state{ 0, 0, 0, 1 };
             DwmExtendFrameIntoClientArea(hwnd, &shadow_state);
         }        
@@ -188,17 +203,61 @@ void Window::createWindow()
     
 }
 
+LRESULT Window::hitTest(int x,int y) {
+    if (!hwnd) return HTNOWHERE;
+    RECT winRect;
+    GetWindowRect(hwnd, &winRect);
+    if (x > winRect.left && y > winRect.top && x < winRect.right && y < winRect.bottom) {
+        if (resizable) {
+            int borderWidth = 4;
+            if (x < winRect.left + borderWidth && y < winRect.top + borderWidth) return HTTOPLEFT;
+            else if (x < winRect.left + borderWidth &&  y > winRect.bottom - borderWidth) return HTBOTTOMLEFT;
+            else if (x > winRect.right - borderWidth && y > winRect.bottom - borderWidth) return HTBOTTOMRIGHT;
+            else if (x > winRect.right - borderWidth && y < winRect.top + borderWidth) return HTTOPRIGHT;
+            else if (x < winRect.left + borderWidth) return HTLEFT;
+            else if (x > winRect.right - borderWidth) return HTRIGHT;
+            else if (y < winRect.top + borderWidth) return HTTOP;
+            else if (y > winRect.bottom - borderWidth) return HTBOTTOM;
+        }
+        for (auto& box : this->captionArea)
+        {
+            if (box.contains(x - winRect.left, y - winRect.top)) {
+                return HTCAPTION;
+            }
+        }
+        return HTCLIENT;
+    }
+    else
+    {
+        return HTNOWHERE;
+    }
+}
+
+
 LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
         case WM_NCCALCSIZE:
         {
-            if (wParam == TRUE && !frame) {
+            
+            if (!frame) {
                 //这样可以将客户端区域扩展到包括框架在内的窗口大小,但不包括阴影部分
                 return 0;
             }
             break;
+        }
+        case WM_NCHITTEST:
+        {
+            this->hwnd = hWnd;
+            int x = GET_X_LPARAM(lParam);
+            int y = GET_Y_LPARAM(lParam);
+            return this->hitTest(x,y);
+            break;
+        }
+        case WM_SIZE:
+        {
+            return 0;
         }
         //case WM_SETCURSOR: {
         //    return 1;

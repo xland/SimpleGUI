@@ -82,17 +82,11 @@ bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name, std::ws
     return true;
 }
 
-bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, const char* name, BLBoxI& out)
+bool GetPropertyVal(JSContext* ctx, JSValueConst& obj, BLBoxI& out)
 {
-    JSValue val = JS_GetPropertyStr(ctx, obj, name);
-    if (JS_IsException(val)) {
-        JS_FreeValue(ctx, val);
-        return false;
-    }
-    if (JS_IsUndefined(val)) {
-        JS_FreeValue(ctx, val);
-        return false;
-    }
-    
+    GetPropertyVal(ctx,obj, "x0", out.x0);
+    GetPropertyVal(ctx, obj, "y0", out.y0);
+    GetPropertyVal(ctx, obj, "x1", out.x1);
+    GetPropertyVal(ctx, obj, "y1", out.y1);
     return true;
 }

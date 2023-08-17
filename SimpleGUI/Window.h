@@ -24,11 +24,12 @@ public:
 	HWND hwnd;
 private:
 	Window(int x, int y, int width, int height,bool frame,bool shadow,bool visible, bool center,std::wstring title, std::vector<BLBoxI> captionArea);
+	LRESULT hitTest(int x, int y);
 	static JSValue WindowNew(JSContext* ctx, JSValueConst jsThis, int argc, JSValueConst* argv);
 	static void WindowFinalizer(JSRuntime* rt, JSValue val);
 	void createWindow();
 	int x, y, width, height;
-	bool frame, shadow , visible,center;
+	bool frame, shadow , visible,center, resizable;
 	std::wstring title;
 	static std::string className;
 	std::vector<BLBoxI> captionArea;
