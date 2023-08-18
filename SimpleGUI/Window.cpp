@@ -193,7 +193,7 @@ void Window::createWindow()
         //BOOL attrib = TRUE;
         //DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
         if (shadow) {
-            auto borderlessStyle = WS_POPUP | WS_THICKFRAME | WS_SYSMENU;; //todo
+            auto borderlessStyle = WS_POPUP | WS_THICKFRAME | WS_SYSMENU| WS_CAPTION; //todo
             SetWindowLongPtr(hwnd, GWL_STYLE, borderlessStyle);
             static const MARGINS shadow_state{ 0, 0, 0, 1 };
             DwmExtendFrameIntoClientArea(hwnd, &shadow_state);
