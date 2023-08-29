@@ -7,6 +7,7 @@
 - shadow:bool
 - visible:bool
 - center:bool
+- transition:bool
 
 - title:string
 

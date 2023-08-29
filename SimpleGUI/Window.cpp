@@ -47,6 +47,30 @@ void Window::Show()
     UpdateWindow(hwnd);
 }
 
+JSValue Window::Repaint(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
+{
+    Window* win = (Window*)JS_GetOpaque(this_val, WindowClassId);
+    win->Repaint();
+    return JS_NewInt32(ctx, 222);
+}
+void Window::Repaint()
+{
+    ShowWindow(hwnd, SW_SHOW);
+    UpdateWindow(hwnd);
+}
+
+JSValue Window::RequestRepaint(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
+{
+    Window* win = (Window*)JS_GetOpaque(this_val, WindowClassId);
+    win->Repaint();
+    return JS_NewInt32(ctx, 222);
+}
+void Window::RequestRepaint()
+{
+    ShowWindow(hwnd, SW_SHOW);
+    UpdateWindow(hwnd);
+}
+
 JSValue Window::AddEventListener(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
 {
     JSValueConst func = argv[1];
@@ -76,11 +100,12 @@ JSValue Window::WindowNew(JSContext* ctx, JSValueConst jsThis, int argc, JSValue
     GetPropertyVal(ctx, argv[0], "y", y);
     GetPropertyVal(ctx, argv[0], "width", width);
     GetPropertyVal(ctx, argv[0], "height", height);
-    bool frame{ true }, shadow{ true }, visible{ true }, center{true};
+    bool frame{ true }, shadow{ true }, visible{ true }, center{ true }, transition{true};
     GetPropertyVal(ctx, argv[0], "frame",frame);
     GetPropertyVal(ctx, argv[0], "shadow", shadow);
     GetPropertyVal(ctx, argv[0], "visible", visible);
     GetPropertyVal(ctx, argv[0], "center", center);
+    GetPropertyVal(ctx, argv[0], "center", transition);
     std::wstring title{L"SimpleGUI"};
     GetPropertyVal(ctx, argv[0], "title", title);
     std::vector<BLBoxI> captionArea;
@@ -96,7 +121,7 @@ JSValue Window::WindowNew(JSContext* ctx, JSValueConst jsThis, int argc, JSValue
         JS_FreeValue(ctx, item);
     }
     JS_FreeValue(ctx, captionAreaVal);
-    auto s = new Window(x,y,width,height,frame,shadow,visible,center,title, captionArea);
+    auto s = new Window(x,y,width,height,frame,shadow,visible,center, transition,title, captionArea);
     JS_SetOpaque(obj, s);
     return obj;
 }
@@ -113,8 +138,7 @@ void Window::Register(JSContext* ctx, JSModuleDef* m)
     proto = JS_NewObject(ctx);    
     JS_SetPropertyFunctionList(ctx, proto, funcs, countof(funcs));
     //todo 加个字符串字段
-    //JS_SetPropertyStr(ctx, proto, "allen", JS_NewInt32(ctx, 111));
-    
+    //JS_SetPropertyStr(ctx, proto, "allen", JS_NewInt32(ctx, 111));    
     //JSValue val = JS_NewCFunction2(ctx, Close, "close", 1, JS_CFUNC_generic, 0);
     //JS_SetPropertyValue(ctx,proto,)
 
@@ -126,22 +150,19 @@ void Window::Register(JSContext* ctx, JSModuleDef* m)
     //JS_CFUNC_DEF("exit", 1, js_std_exit);
     //JS_SetModuleExport(ctx, m, "close", js_new_std_file(ctx, stdin, FALSE, FALSE));
     //auto ret = JS_SetModuleExportList(ctx, m, funcs, count);
-
-    
+    //     
     //JSValue val;
     //val = JS_NewObject(ctx);
     //JS_SetPropertyFunctionList(ctx, val, e->u.prop_list.tab, e->u.prop_list.len);
-
-
-
+    // 
     //JSValue val = JS_NewCFunction2(ctx, Close,"close", 1, JS_CFUNC_generic, 0);
     //auto ret = JS_SetModuleExport(ctx, m, "close", val);
     
 }
 
-Window::Window(int x, int y, int width, int height, bool frame, bool shadow, bool visible,bool center,std::wstring title, std::vector<BLBoxI> captionArea):
+Window::Window(int x, int y, int width, int height, bool frame, bool shadow, bool visible,bool center,bool transition,std::wstring title, std::vector<BLBoxI> captionArea):
     x{x},y{y},width{width},height{height},
-    frame{ frame }, shadow{ shadow }, visible{ visible }, center{center},
+    frame{ frame }, shadow{ shadow }, visible{ visible }, center{center}, transition{ transition },
     title{title},
     captionArea{captionArea}
 {
@@ -175,7 +196,7 @@ void Window::createWindow()
     wcx.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcx.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcx.lpszClassName = L"SimpleGUI";
-    if (!RegisterClassEx(&wcx))
+    if (!RegisterClassEx(&wcx)) //todo
     {
         MessageBox(NULL, L"注册窗口类失败", L"系统提示", NULL);
         return;
@@ -186,21 +207,12 @@ void Window::createWindow()
         x = (rect.right - width) / 2;
         y = (rect.bottom - height) / 2;
     }
-    auto borderlessStyle = WS_POPUP | WS_THICKFRAME | WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX;
-    this->hwnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_WINDOWEDGE, 
-        wcx.lpszClassName, title.c_str(), WS_OVERLAPPEDWINDOW, x, y, width, height, NULL, NULL, hinstance, static_cast<LPVOID>(this));
-    if (!frame) {
-        //BOOL attrib = TRUE;
-        //DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
-        if (shadow) {
-            auto borderlessStyle = WS_POPUP | WS_THICKFRAME | WS_SYSMENU| WS_CAPTION; //todo
-            SetWindowLongPtr(hwnd, GWL_STYLE, borderlessStyle);
-            static const MARGINS shadow_state{ 0, 0, 0, 1 };
-            DwmExtendFrameIntoClientArea(hwnd, &shadow_state);
-        }        
-        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-    }
-    
+    this->hwnd = CreateWindowEx(WS_EX_LAYERED,wcx.lpszClassName, title.c_str(), 
+        WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_POPUP, x, y, width, height, NULL, NULL, hinstance, static_cast<LPVOID>(this));
+    if (!transition) {
+        BOOL attrib = TRUE;
+        DwmSetWindowAttribute(hwnd, DWMWA_TRANSITIONS_FORCEDISABLED, &attrib, sizeof(attrib));
+    }    
 }
 
 LRESULT Window::hitTest(int x,int y) {
@@ -240,7 +252,6 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
     {
         case WM_NCCALCSIZE:
         {
-            
             if (!frame) {
                 //这样可以将客户端区域扩展到包括框架在内的窗口大小,但不包括阴影部分
                 return 0;
