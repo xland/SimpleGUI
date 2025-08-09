@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Element.h"
+class SkSurface;
 class WindowBase:public Element
 {
 public:
@@ -26,5 +27,6 @@ private:
 	bool resizable;
 	std::vector<uint32_t> buffer;
 	std::wstring title;
+	sk_sp<SkSurface> surface;
 };
 

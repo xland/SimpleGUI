@@ -1,4 +1,7 @@
 #include <windowsx.h>
+#include <core/SkImageInfo.h>
+#include <core/SkSurface.h>
+#include <core/SkColorSpace.h>
 #include "App.h"
 #include "WindowBase.h"
 
@@ -56,24 +59,30 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
         return this->hitTest(x, y);
         break;
     }
+    case WM_MOVE: 
+    {
+        setPosition(LOWORD(lParam), HIWORD(lParam));
+        return 0;
+    }
     case WM_SIZE:
     {
+        setSize(LOWORD(lParam), HIWORD(lParam));
+        surface.reset(nullptr);
+        SkImageInfo info = SkImageInfo::MakeN32Premul(win->w, win->h);
+        surface = SkSurfaces::Raster(info);
         return 0;
     }
     //case WM_SETCURSOR: {
     //    return 1;
     //}
-    case WM_TIMER: {
-        return 1;
-    }
-                 //case WM_ERASEBKGND:
-                 //{
-                 //    return 1;
-                 //}
-                 //case WM_PAINT:
-                 //{
-                 //    return 0;
-                 //}
+    //case WM_ERASEBKGND:
+    //{
+    //    return 1;
+    //}
+    //case WM_PAINT:
+    //{
+    //    return 0;
+    //}
     case WM_LBUTTONDBLCLK:
     {
         return 0;
