@@ -1,9 +1,6 @@
-#include <windowsx.h>
-#include <core/SkImageInfo.h>
-#include <core/SkSurface.h>
-#include <core/SkColorSpace.h>
-#include "App.h"
+﻿#include "App.h"
 #include "WindowBase.h"
+#include "WindowBaseImpl.h"
 
 WindowBase::WindowBase() {
 
@@ -12,7 +9,8 @@ WindowBase::~WindowBase() {
 
 }
 void WindowBase::show() {
-
+    ShowWindow(hwnd, SW_SHOW);     // 或者 SW_SHOWNORMAL / SW_SHOWDEFAULT
+    UpdateWindow(hwnd);
 }
 
 void WindowBase::moveToScreenCenter()
@@ -66,10 +64,9 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     }
     case WM_SIZE:
     {
-        setSize(LOWORD(lParam), HIWORD(lParam));
-        surface.reset(nullptr);
-        SkImageInfo info = SkImageInfo::MakeN32Premul(win->w, win->h);
-        surface = SkSurfaces::Raster(info);
+        int w{ LOWORD(lParam) }, h{ HIWORD(lParam) };
+        setSize(w,h);
+        winImpl->resize(w, h);
         return 0;
     }
     //case WM_SETCURSOR: {
@@ -223,13 +220,4 @@ const std::wstring& WindowBase::getWinClsName()
         return wcex.lpszClassName;
         }();
     return clsName;
-}
-
-void WindowBase::createNativeWindow()
-{
-    auto pos = getPosition();
-    auto size = getSize();
-    hwnd = CreateWindowEx(WS_EX_APPWINDOW, getWinClsName().data(), title.data(), WS_OVERLAPPEDWINDOW,
-        pos.x, pos.y, size.w, size.h, nullptr, nullptr, App::get()->hInstance, nullptr);
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 }

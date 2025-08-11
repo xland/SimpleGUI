@@ -45,6 +45,9 @@
     <ClCompile Include="Size.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="WindowBaseImpl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">
@@ -81,6 +84,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Size.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowBaseImpl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

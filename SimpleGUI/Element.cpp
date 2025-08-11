@@ -38,8 +38,8 @@ void Element::setAlignItems(const Align& val)
 
 void Element::setSize(const int& w, const int& h)
 {
-	YGNodeStyleSetWidth(node, w);
-	YGNodeStyleSetHeight(node, h);
+	YGNodeStyleSetWidth(node, (float)w);
+	YGNodeStyleSetHeight(node, (float)h);
 	size.w = w;
 	size.h = h;
 }
@@ -52,17 +52,17 @@ void Element::setPosition(const int& x, const int& y)
 
 void Element::setWidth(const int& w)
 {
-	YGNodeStyleSetWidth(node, w);
+	YGNodeStyleSetWidth(node, (float)w);
 }
 
 void Element::setHeight(const int& h)
 {
-	YGNodeStyleSetHeight(node, h);
+	YGNodeStyleSetHeight(node, (float)h);
 }
 
 void Element::setMargin(const int& val)
 {
-	YGNodeStyleSetMargin(node, YGEdgeAll, val);
+	YGNodeStyleSetMargin(node, YGEdgeAll, (float)val);
 }
 
 void Element::setMargin(const int& left, const int& top, const int& right, const int& bottom)

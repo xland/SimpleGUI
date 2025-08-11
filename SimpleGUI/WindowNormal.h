@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <Windows.h>
+#include <windowsx.h>
 #include <string>
 #include <vector>
 
@@ -7,8 +8,9 @@
 
 class WindowNormal:public WindowBase
 {
-public:	
-
+public:
+	void createNativeWindow() override;
+protected:
 private:
 	//LRESULT hitTest(int x, int y);
 	//void createWindow();
