@@ -2,7 +2,7 @@
 #include "WindowNormal.h"
 #include "Util.h"
 #include "dwmapi.h"
-#include "WindowBaseImpl.h"
+#include "private\WindowBaseImpl.h"
 
 
 

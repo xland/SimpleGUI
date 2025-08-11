@@ -128,7 +128,7 @@
     </Manifest>
     <Lib>
       <AdditionalLibraryDirectories>D:\sdk\yoga\build\yoga\$(Configuration);D:\sdk\skia\out\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>yogacore.lib;skia.lib</AdditionalDependencies>
+      <AdditionalDependencies>yogacore.lib;skia.lib;kernel32.lib;user32.lib;gdi32.lib;shell32.lib;imm32.lib;usp10.lib;dwmapi.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,18 +157,17 @@
     </Manifest>
     <Lib>
       <AdditionalLibraryDirectories>D:\sdk\yoga\build\yoga\$(Configuration);D:\sdk\skia\out\$(Configuration);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>yogacore.lib;skia.lib</AdditionalDependencies>
+      <AdditionalDependencies>yogacore.lib;skia.lib;kernel32.lib;user32.lib;gdi32.lib;shell32.lib;imm32.lib;usp10.lib;dwmapi.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Element.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Util.cpp" />
-    <ClCompile Include="WindowBaseImpl.cpp" />
+    <ClCompile Include="private\WindowBaseImpl.cpp" />
     <ClCompile Include="WindowFrameless.cpp" />
     <ClCompile Include="WindowNormal.cpp" />
     <ClCompile Include="WindowBase.cpp" />
@@ -183,7 +182,7 @@
     <ClInclude Include="Position.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Util.h" />
-    <ClInclude Include="WindowBaseImpl.h" />
+    <ClInclude Include="private\WindowBaseImpl.h" />
     <ClInclude Include="WindowFrameless.h" />
     <ClInclude Include="WindowNormal.h" />
     <ClInclude Include="WindowBase.h" />
