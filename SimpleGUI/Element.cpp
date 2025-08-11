@@ -96,6 +96,11 @@ void Element::setPadding(const Edge& type, const int& val)
 	YGNodeStyleSetPadding(node, (YGEdge)type, (float)val);
 }
 
+void Element::layout()
+{
+	YGNodeCalculateLayout(node, size.w, size.h, YGDirectionLTR);
+}
+
 const Position& Element::getPosition()
 {
 	return position;

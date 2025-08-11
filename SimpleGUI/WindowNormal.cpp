@@ -14,5 +14,9 @@ void WindowNormal::createNativeWindow()
     hwnd = CreateWindowEx(WS_EX_APPWINDOW, getWinClsName().data(), title.data(), WS_OVERLAPPEDWINDOW,
         pos.x, pos.y, size.w, size.h, nullptr, nullptr, App::get()->hInstance, nullptr);
     SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+    RECT clientRect;
+    GetClientRect(hwnd, &clientRect);
+    int w = clientRect.right;
+    int h = clientRect.bottom;
 }
 

@@ -8,6 +8,7 @@ public:
 	WindowBaseImpl(const int& w, const int& h);
 	~WindowBaseImpl();
 	void resize(const int& w, const int& h);
+	const SkPixmap getPix();
 private:
 	sk_sp<SkSurface> surface;
 };

@@ -28,11 +28,11 @@ public:
 	void setPadding(const int& val);
 	void setPadding(const int& left, const int& top, const int& right, const int& bottom);
 	void setPadding(const Edge& type, const int& val);
+	void layout();
 	const Position& getPosition();
 	const Size& getSize();
 public:
 	Color bgColor;
-
 protected:
 private:
 	Position position;

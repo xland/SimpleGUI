@@ -28,6 +28,17 @@ protected:
 private:
 	static LRESULT CALLBACK routeWindowMsg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	void paintArea();
 private:
+	/// <summary>
+	/// 窗口的位置
+	/// </summary>
+	Position position;
+	/// <summary>
+	/// 窗口的大小，
+	/// 无边框窗口大小与Element大小一致
+	/// 有边框窗口大小与Element大小不一致，因为有边框窗口大小包含边框和标题栏
+	/// </summary>
+	Size size;
 };
 
