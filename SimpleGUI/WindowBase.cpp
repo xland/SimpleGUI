@@ -82,7 +82,7 @@ void WindowBase::setWindowPosition(const int& x, const int& y)
 
 LRESULT CALLBACK WindowBase::routeWindowMsg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     auto winObj = reinterpret_cast<WindowBase*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-    if (winObj != nullptr)
+    if (winObj)
     {
         return winObj->windowMsgProc(hwnd, msg, wParam, lParam);
     }
@@ -95,9 +95,20 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
 {
     switch (msg)
     {
+    case WM_NCDESTROY:
+    {
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
+        return 0;
+    }
+    case WM_DESTROY:
+    {
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
+        return 0;
+    }
     case WM_MOVE: 
     {
-        setPosition(LOWORD(lParam), HIWORD(lParam));
+        setWindowPosition(LOWORD(lParam), HIWORD(lParam));
+        PostQuitMessage(0);
         return 0;
     }
     case WM_SIZE:
@@ -105,7 +116,7 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
         int w{ LOWORD(lParam) }, h{ HIWORD(lParam) };
         setSize(w,h);
         winImpl->resize(w, h);
-        layout();
+        layout(w, h);
         return 0;
     }
     //case WM_SETCURSOR: {
@@ -142,11 +153,6 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     case WM_LBUTTONUP:
     {
         return 0;
-    }
-    case WM_DESTROY:
-    {
-        PostQuitMessage(0);
-        return 1;
     }
     case WM_KEYDOWN:
     {
@@ -217,7 +223,7 @@ void WindowBase::paintArea()
 {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
-    auto& size = getSize();
+    auto size = getSize();
     // 创建兼容DC和缓冲Bitmap
     HDC memDC = CreateCompatibleDC(hdc);
     HBITMAP memBitmap = CreateCompatibleBitmap(hdc, size.w, size.h);

@@ -6,9 +6,12 @@
 #include "Color.h"
 #include "Position.h"
 #include "Size.h"
+#include "FlexDirection.h"
 
 struct YGNode;
+struct SkRect;
 class SkCanvas;
+class SkPaint;
 class Element
 {
 public:
@@ -19,33 +22,37 @@ public:
 	const std::vector<Element*>& getChildren();
 	void setJustifyContent(const Justify& val);
 	void setAlignItems(const Align& val);
-	void setWidth(const int& w);
-	void setHeight(const int& h);
-	void setMargin(const int& val);
-	void setMargin(const int& left, const int& top, const int& right, const int& bottom);
-	void setMargin(const Edge& type, const int& val);
-	void setPadding(const int& val);
-	void setPadding(const int& left, const int& top, const int& right, const int& bottom);
-	void setPadding(const Edge& type, const int& val);
-	void setSize(const int& w, const int& h);
-	void setPosition(const int& x, const int& y);
+	void setFlexDirection(const FlexDirection& flexDirection);
+	void setFlexGrow(const float& val);
+	void setFlexShrink(const float& val);
+	void setWidth(const float& w);
+	void setHeight(const float& h);
+	void setMargin(const float& val);
+	void setMargin(const float& left, const float& top, const float& right, const float& bottom);
+	void setMargin(const Edge& type, const float& val);
+	void setPadding(const float& val);
+	void setPadding(const float& left, const float& top, const float& right, const float& bottom);
+	void setPadding(const Edge& type, const float& val);
+	void setSize(const float& w, const float& h);
 	void setBorderWidth(const float& width);
 	void setBorderColor(const Color& color); 
 	void setBackgroundColor(const Color& color);
+	void setRadius(float r);
+	void setRadius(float lt, float rt, float rb, float lb);
 	void paint(SkCanvas* canvas);
-	const Position& getPosition();
-	const Size& getSize();
+	Position getPosition();
+	Size getSize();
 public:
-	Color bgColor;
-	Color borderColor;
-protected:
-	void layout();
-private:
-	Position position;
-	Size size;
-	std::vector<Element*> children;
-	YGNode* node;
-	float borderWidth;
 
+protected:
+	void layout(const float& w,const float& h);
+private:
+	void paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& rect);
+private:
+	YGNode* node;
+	std::vector<Element*> children;
+	float borderWidth;
+	float radiusLT{ 0.f }, radiusRT{ 0.f }, radiusRB{ 0.f }, radiusLB{ 0.f };
+	Color bgColor{ 0x00000000 },borderColor{ 0x00000000 };
 };
 

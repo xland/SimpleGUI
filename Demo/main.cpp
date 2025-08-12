@@ -1,7 +1,33 @@
 #include <Windows.h>
 #include <App.h>
+#include <WindowBase.h>
 #include <WindowNormal.h>
 #include <WindowFrameless.h>
+
+void winLayoutCenter(WindowBase& win) {
+    win.setAlignItems(Align::Center);
+    win.setJustifyContent(Justify::Center);
+    auto ele = new Element();
+    ele->setSize(500, 500);
+    ele->setBackgroundColor(0xFF876543);
+    win.addChild(ele);
+}
+
+void winLeftRightLayout(WindowBase& win)
+{
+    win.setFlexDirection(FlexDirection::Row);
+    auto left = new Element();
+    left->setSize(300,SizeNaN);
+    left->setBackgroundColor(0xFF876543);
+    win.addChild(left);
+
+    auto right = new Element();
+    right->setFlexGrow(1.f);
+    right->setFlexShrink(1.f);
+    right->setBackgroundColor(0xFF9988aa);
+    win.addChild(right);
+}
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -11,21 +37,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     win.setWindowSize(1000, 800);
     win.setWindowToScreenCenter();
     win.setBackgroundColor(0xFF234567);
-    win.setBorderColor(0xFF997890);
-    win.setBorderWidth(4.0f);
-
-
-    win.setAlignItems(Align::Center);
-    win.setJustifyContent(Justify::Center);
-    auto ele = new Element();
-    ele->setSize(500, 500);
-    ele->setBackgroundColor(0xFF876543);
-    ele->setBorderColor(0xFF654321);
-    ele->setBorderWidth(4.0f);
-    win.addChild(ele);
-
-
-
+    //winLayoutCenter(win);
+    winLeftRightLayout(win);
     win.createNativeWindow();
     win.show();
 

@@ -2,11 +2,11 @@
 class Position
 {
 public:
-	Position() = delete;
+	Position();
 	Position(const int& x = 0,const int& y = 0);
 	~Position();
 public:
-	int x, y;
+	int x{ 0 }, y{0};
 private:
 };
 

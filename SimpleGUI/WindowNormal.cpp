@@ -18,5 +18,7 @@ void WindowNormal::createNativeWindow()
     GetClientRect(hwnd, &clientRect);
     int w = clientRect.right;
     int h = clientRect.bottom;
+    winImpl->resize(w, h);
+    layout(w, h);
 }
 

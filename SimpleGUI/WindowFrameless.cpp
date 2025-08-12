@@ -27,9 +27,8 @@ void WindowFrameless::createNativeWindow()
     DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &value, sizeof(value));
     DwmSetWindowAttribute(hwnd, DWMWA_ALLOW_NCPAINT, &value, sizeof(value));
 
-    setSize(size.w, size.h);
     winImpl->resize(size.w, size.h);
-    layout();
+    layout(size.w, size.h);
 }
 
 LRESULT WindowFrameless::customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

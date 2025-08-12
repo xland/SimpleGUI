@@ -2,11 +2,11 @@
 #include "include/core/SkRect.h"
 #include "include/core/SkCanvas.h"
 #include "include/core/SkPaint.h"
+#include "include/core/SkRRect.h"
 #include "Element.h"
 
-Element::Element():position(0,0),size(0,0)
+Element::Element():node{ YGNodeNew() }
 {
-	node = YGNodeNew();
 }
 Element::~Element() 
 {
@@ -39,20 +39,44 @@ void Element::setAlignItems(const Align& val)
 	YGNodeStyleSetAlignItems(node, (YGAlign)val);
 }
 
-void Element::setSize(const int& w, const int& h)
+void Element::setFlexDirection(const FlexDirection& flexDirection)
 {
-	YGNodeStyleSetWidth(node, (float)w);
-	YGNodeStyleSetHeight(node, (float)h);
-	size.w = w;
-	size.h = h;
+	YGNodeStyleSetFlexDirection(node, (YGFlexDirection)flexDirection);
 }
 
-void Element::setPosition(const int& x, const int& y)
+void Element::setFlexGrow(const float& val)
 {
-	position.x = x;
-	position.y = y;
+	YGNodeStyleSetFlexGrow(node, val);
 }
 
+void Element::setFlexShrink(const float& val)
+{
+	YGNodeStyleSetFlexShrink(node, val);
+}
+
+void Element::setRadius(float r)
+{
+	radiusLT = r; radiusRT = r; radiusRB = r; radiusLB = r;
+}
+
+void Element::setRadius(float lt, float rt, float rb, float lb)
+{
+	radiusLT = lt; radiusRT = rt; radiusRB = rb; radiusLB = lb;
+}
+
+void Element::setSize(const float& w, const float& h)
+{
+	YGNodeStyleSetWidth(node, w);
+	YGNodeStyleSetHeight(node, h);
+}
+void Element::setWidth(const float& w)
+{
+	YGNodeStyleSetWidth(node, w);
+}
+void Element::setHeight(const float& h)
+{
+	YGNodeStyleSetHeight(node, h);
+}
 void Element::setBorderWidth(const float& width)
 {
 	borderWidth = width;
@@ -68,91 +92,100 @@ void Element::setBackgroundColor(const Color& color)
 	bgColor = color;
 }
 
+void Element::setMargin(const float& val)
+{
+	YGNodeStyleSetMargin(node, YGEdgeAll, val);
+}
+
+void Element::setMargin(const float& left, const float& top, const float& right, const float& bottom)
+{
+	YGNodeStyleSetMargin(node, YGEdgeLeft,left);
+	YGNodeStyleSetMargin(node, YGEdgeTop,top);
+	YGNodeStyleSetMargin(node, YGEdgeRight,right);
+	YGNodeStyleSetMargin(node, YGEdgeBottom,bottom);
+}
+
+void Element::setMargin(const Edge& type, const float& val)
+{
+	YGNodeStyleSetMargin(node, (YGEdge)type,val);
+}
+
+void Element::setPadding(const float& val)
+{
+	YGNodeStyleSetPadding(node, YGEdgeAll, val);
+}
+
+void Element::setPadding(const float& left, const float& top, const float& right, const float& bottom)
+{
+	YGNodeStyleSetPadding(node, YGEdgeLeft,left);
+	YGNodeStyleSetPadding(node, YGEdgeTop,top);
+	YGNodeStyleSetPadding(node, YGEdgeRight,right);
+	YGNodeStyleSetPadding(node, YGEdgeBottom,bottom);
+}
+
+void Element::setPadding(const Edge& type, const float& val)
+{
+	YGNodeStyleSetPadding(node, (YGEdge)type,val);
+}
+
+void Element::layout(const float& w, const float& h)
+{
+	YGNodeCalculateLayout(node, w, h, YGDirectionLTR);
+}
+
+Position Element::getPosition()
+{
+	float x = YGNodeLayoutGetLeft(node);
+	float y = YGNodeLayoutGetTop(node);
+	return Position(x,y);
+}
+
+Size Element::getSize()
+{
+	float w = YGNodeLayoutGetWidth(node);
+	float h = YGNodeLayoutGetHeight(node);
+	return Size(w,h);
+}
+
 void Element::paint(SkCanvas* canvas)
 {
 	float x = YGNodeLayoutGetLeft(node);
-	float y = YGNodeLayoutGetTop(node);  
+	float y = YGNodeLayoutGetTop(node);
 	float w = YGNodeLayoutGetWidth(node);
 	float h = YGNodeLayoutGetHeight(node);
 	SkRect rect = SkRect::MakeXYWH(x, y, w, h);
-
-	// 设置填充颜色并绘制背景
-	SkPaint fillPaint;
-	fillPaint.setColor(bgColor);
-	fillPaint.setStyle(SkPaint::kFill_Style);
-	canvas->drawRect(rect, fillPaint);
-
-	rect.setXYWH(x + borderWidth / 2, y + borderWidth / 2, w - borderWidth, h - borderWidth);
-	SkPaint paint;
-	paint.setAntiAlias(true);
-	paint.setColor(borderColor);
-	paint.setStrokeWidth(borderWidth);
-	paint.setStyle(SkPaint::kStroke_Style);
-	canvas->drawRect(rect, paint);
-
+	if (bgColor != 0) { //绘制背景
+		SkPaint paint;
+		paint.setColor(bgColor);
+		paint.setStyle(SkPaint::kFill_Style);
+		paintRect(canvas, paint, rect);
+	}
+	if (borderColor != 0 && borderWidth > 0) { //绘制边框
+		rect.setXYWH(x + borderWidth / 2, y + borderWidth / 2, w - borderWidth, h - borderWidth);
+		SkPaint paint;
+		paint.setAntiAlias(true);
+		paint.setColor(borderColor);
+		paint.setStrokeWidth(borderWidth);
+		paint.setStyle(SkPaint::kStroke_Style);
+		paintRect(canvas, paint, rect);
+	}
 	for (size_t i = 0; i < children.size(); i++)
 	{
+		canvas->save();
+		canvas->translate(x, y);
 		children[i]->paint(canvas);
+		canvas->restore();
 	}
 }
-
-void Element::setWidth(const int& w)
+void Element::paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& rect)
 {
-	YGNodeStyleSetWidth(node, (float)w);
-}
-
-void Element::setHeight(const int& h)
-{
-	YGNodeStyleSetHeight(node, (float)h);
-}
-
-void Element::setMargin(const int& val)
-{
-	YGNodeStyleSetMargin(node, YGEdgeAll, (float)val);
-}
-
-void Element::setMargin(const int& left, const int& top, const int& right, const int& bottom)
-{
-	YGNodeStyleSetMargin(node, YGEdgeLeft, (float)left);
-	YGNodeStyleSetMargin(node, YGEdgeTop, (float)top);
-	YGNodeStyleSetMargin(node, YGEdgeRight, (float)right);
-	YGNodeStyleSetMargin(node, YGEdgeBottom, (float)bottom);
-}
-
-void Element::setMargin(const Edge& type, const int& val)
-{
-	YGNodeStyleSetMargin(node, (YGEdge)type, (float)val);
-}
-
-void Element::setPadding(const int& val)
-{
-	YGNodeStyleSetPadding(node, YGEdgeAll, (float)val);
-}
-
-void Element::setPadding(const int& left, const int& top, const int& right, const int& bottom)
-{
-	YGNodeStyleSetPadding(node, YGEdgeLeft, (float)left);
-	YGNodeStyleSetPadding(node, YGEdgeTop, (float)top);
-	YGNodeStyleSetPadding(node, YGEdgeRight, (float)right);
-	YGNodeStyleSetPadding(node, YGEdgeBottom, (float)bottom);
-}
-
-void Element::setPadding(const Edge& type, const int& val)
-{
-	YGNodeStyleSetPadding(node, (YGEdge)type, (float)val);
-}
-
-void Element::layout()
-{
-	YGNodeCalculateLayout(node, size.w, size.h, YGDirectionLTR);
-}
-
-const Position& Element::getPosition()
-{
-	return position;
-}
-
-const Size& Element::getSize()
-{
-	return size;
+	if (radiusLT > 0 || radiusRT > 0 || radiusRB > 0 || radiusLB > 0) {
+		SkVector radii[4]{ {radiusLT, radiusLT}, {radiusRT, radiusRT}, {radiusRB, radiusRB}, {radiusLB, radiusLB} };
+		SkRRect rr;
+		rr.setRectRadii(rect, radii);
+		canvas->drawRRect(rr, paint);
+	}
+	else {
+		canvas->drawRect(rect, paint);
+	}
 }
