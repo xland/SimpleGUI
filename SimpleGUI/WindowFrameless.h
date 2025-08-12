@@ -8,6 +8,7 @@ public:
 	WindowFrameless();
 	~WindowFrameless();
 	void createNativeWindow() override;
+	void addCaptionArea();
 public:
 protected:
 	LRESULT CALLBACK customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

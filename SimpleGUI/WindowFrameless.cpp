@@ -31,6 +31,11 @@ void WindowFrameless::createNativeWindow()
     layout(size.w, size.h);
 }
 
+void WindowFrameless::addCaptionArea()
+{
+
+}
+
 LRESULT WindowFrameless::customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
