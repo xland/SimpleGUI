@@ -2,7 +2,8 @@
 #include "WindowBase.h"
 #include "private\WindowBaseImpl.h"
 
-WindowBase::WindowBase() {
+WindowBase::WindowBase() :winPosition(0, 0), winSize(980, 680)
+{
 
 }
 WindowBase::~WindowBase() {
@@ -13,13 +14,25 @@ void WindowBase::show() {
     UpdateWindow(hwnd);
 }
 
-void WindowBase::moveToScreenCenter()
+void WindowBase::resetWindowToScreenCenter()
 {
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-    auto size = getSize();
-    setSize((screenWidth - size.w) / 2, (screenHeight - size.h) / 2);
-    //todo
+    auto size = getWindowSize();
+    int x{ (screenWidth - size.w) / 2 };
+    int y{ (screenHeight - size.h) / 2 };
+    setWindowPosition(x,y);
+    SetWindowPos(hwnd, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+
+void WindowBase::setWindowToScreenCenter()
+{
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    auto size = getWindowSize();
+    int x{ (screenWidth - size.w) / 2 };
+    int y{ (screenHeight - size.h) / 2 };
+    setWindowPosition(x, y);
 }
 
 void WindowBase::setTitle(const std::wstring& title)
@@ -30,6 +43,41 @@ void WindowBase::setTitle(const std::wstring& title)
 const std::wstring& WindowBase::getTitle()
 {
     return title;
+}
+
+const Position& WindowBase::getWindowPosition()
+{
+    return winPosition;
+}
+
+const Size& WindowBase::getWindowSize()
+{
+    return winSize;
+}
+
+void WindowBase::resetWindowSize(const int& w, const int& h)
+{
+    winSize.w = w;
+    winSize.h = h;
+    SetWindowPos(hwnd, NULL, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER);
+}
+
+void WindowBase::resetWindowPosition(const int& x, const int& y)
+{
+    winPosition.x = x;
+    winPosition.y = y;
+    SetWindowPos(hwnd, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+void WindowBase::setWindowSize(const int& w, const int& h)
+{
+    winSize.w = w;
+    winSize.h = h;
+}
+
+void WindowBase::setWindowPosition(const int& x, const int& y)
+{
+    winPosition.x = x;
+    winPosition.y = y;
 }
 
 LRESULT CALLBACK WindowBase::routeWindowMsg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -68,6 +116,11 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     //    return 1;
     //}
     case WM_PAINT: {
+        //PAINTSTRUCT ps;
+        //HDC hdc = BeginPaint(hwnd, &ps);
+        //EndPaint(hwnd, &ps);
+        winImpl->paintElement(this);
+        paintArea();
         return 0;
     }
     case WM_LBUTTONDBLCLK:

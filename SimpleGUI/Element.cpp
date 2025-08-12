@@ -1,13 +1,16 @@
-#include <yoga/Yoga.h>
+﻿#include <yoga/Yoga.h>
+#include "include/core/SkRect.h"
+#include "include/core/SkCanvas.h"
+#include "include/core/SkPaint.h"
 #include "Element.h"
 
-Element::Element():position(0,0),size(980,800)
+Element::Element():position(0,0),size(0,0)
 {
 	node = YGNodeNew();
 }
 Element::~Element() 
 {
-
+	YGNodeFreeRecursive(node);
 }
 void Element::addChild(Element* ele)
 {
@@ -48,6 +51,49 @@ void Element::setPosition(const int& x, const int& y)
 {
 	position.x = x;
 	position.y = y;
+}
+
+void Element::setBorderWidth(const float& width)
+{
+	borderWidth = width;
+}
+
+void Element::setBorderColor(const Color& color)
+{
+	borderColor = color;
+}
+
+void Element::setBackgroundColor(const Color& color)
+{
+	bgColor = color;
+}
+
+void Element::paint(SkCanvas* canvas)
+{
+	float x = YGNodeLayoutGetLeft(node);
+	float y = YGNodeLayoutGetTop(node);  
+	float w = YGNodeLayoutGetWidth(node);
+	float h = YGNodeLayoutGetHeight(node);
+	SkRect rect = SkRect::MakeXYWH(x, y, w, h);
+
+	// 设置填充颜色并绘制背景
+	SkPaint fillPaint;
+	fillPaint.setColor(bgColor);
+	fillPaint.setStyle(SkPaint::kFill_Style);
+	canvas->drawRect(rect, fillPaint);
+
+	rect.setXYWH(x + borderWidth / 2, y + borderWidth / 2, w - borderWidth, h - borderWidth);
+	SkPaint paint;
+	paint.setAntiAlias(true);
+	paint.setColor(borderColor);
+	paint.setStrokeWidth(borderWidth);
+	paint.setStyle(SkPaint::kStroke_Style);
+	canvas->drawRect(rect, paint);
+
+	for (size_t i = 0; i < children.size(); i++)
+	{
+		children[i]->paint(canvas);
+	}
 }
 
 void Element::setWidth(const int& w)

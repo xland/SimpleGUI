@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <Windows.h>
 #include <windowsx.h>
 #include <string>
@@ -12,10 +12,20 @@ public:
 	WindowBase();
 	~WindowBase();
 	void show();
-	void moveToScreenCenter();
 	void setTitle(const std::wstring& title);
 	const std::wstring& getTitle();
 	virtual void createNativeWindow() = 0;
+
+	const Position& getWindowPosition();
+	const Size& getWindowSize();
+
+	void setWindowSize(const int& w, const int& h);
+	void setWindowPosition(const int& x, const int& y);
+	void setWindowToScreenCenter();
+
+	void resetWindowSize(const int& w, const int& h);
+	void resetWindowPosition(const int& x, const int& y);
+	void resetWindowToScreenCenter();
 public:
 	HWND hwnd;
 protected:
@@ -31,14 +41,14 @@ private:
 	void paintArea();
 private:
 	/// <summary>
-	/// 窗口的位置
+	/// 窗口在屏幕上的位置
 	/// </summary>
-	Position position;
+	Position winPosition;
 	/// <summary>
 	/// 窗口的大小，
 	/// 无边框窗口大小与Element大小一致
 	/// 有边框窗口大小与Element大小不一致，因为有边框窗口大小包含边框和标题栏
 	/// </summary>
-	Size size;
+	Size winSize;
 };
 

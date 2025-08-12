@@ -1,3 +1,4 @@
+#include "../Element.h"
 #include "WindowBaseImpl.h"
 
 
@@ -15,6 +16,12 @@ void WindowBaseImpl::resize(const int& w, const int& h)
     surface.reset(nullptr);
     SkImageInfo info = SkImageInfo::MakeN32Premul(w, h);
     surface = SkSurfaces::Raster(info);
+}
+
+void WindowBaseImpl::paintElement(Element* ele)
+{
+    auto canvas = surface->getCanvas();
+    ele->paint(canvas);
 }
 
 const SkPixmap WindowBaseImpl::getPix()
