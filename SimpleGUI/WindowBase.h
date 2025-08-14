@@ -3,9 +3,11 @@
 #include <windowsx.h>
 #include <string>
 #include <memory>
+
 #include "Element.h"
 
 class WindowBaseImpl;
+class Element;
 class WindowBase:public Element
 {
 public:
@@ -26,6 +28,7 @@ public:
 	void resetWindowSize(const int& w, const int& h);
 	void resetWindowPosition(const int& x, const int& y);
 	void resetWindowToScreenCenter();
+	Element* getElementByPosition(int x, int y);
 public:
 	HWND hwnd;
 protected:
@@ -38,6 +41,7 @@ protected:
 private:
 	static LRESULT CALLBACK routeWindowMsg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	void windowMouseMove(const int& x, const int& y);
 	void paintArea();
 private:
 	/// <summary>

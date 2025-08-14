@@ -1,4 +1,7 @@
-﻿#include "App.h"
+﻿#include <yoga/Yoga.h>
+
+#include "Element.h"
+#include "App.h"
 #include "WindowBase.h"
 #include "private\WindowBaseImpl.h"
 
@@ -144,6 +147,7 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     }
     case WM_MOUSEMOVE:
     {
+        windowMouseMove(LOWORD(lParam), HIWORD(lParam));
         return 0;
     }
     case WM_LBUTTONDOWN:
@@ -219,6 +223,14 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     return customMsgProc(hwnd, msg, wParam, lParam);
 }
 
+void WindowBase::windowMouseMove(const int& x, const int& y)
+{
+    MouseEvent e(x,y);
+    auto ele = getElementByPosition(x, y);
+    e.setRelativePosition(ele);
+    ele->mouseMove(e);
+}
+
 void WindowBase::paintArea()
 {
     PAINTSTRUCT ps;
@@ -290,4 +302,27 @@ const std::wstring& WindowBase::getWinClsName()
         return wcex.lpszClassName;
         }();
     return clsName;
+}
+
+Element* WindowBase::getElementByPosition(int x, int y)
+{
+    Element* result = this;
+    auto children = &result->getChildren();
+    while (children->size() > 0) {
+        bool flag{ false };
+        for (auto& child : *children) //遍历子元素
+        {
+            if (child->hittest(x,y)) //命中测试
+            {
+                flag = true;
+                result = child;
+                children = &result->getChildren();
+                break; //结束本层级的遍历，开始遍历下一个层级，找到最底层的元素
+            }
+        }
+        if (!flag) {
+            break;//上级命中，但本级没有命中，直接退出循环。
+        }
+    }
+    return result;
 }

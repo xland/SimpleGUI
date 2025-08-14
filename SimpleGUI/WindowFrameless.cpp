@@ -57,7 +57,7 @@ LRESULT WindowFrameless::hitTest(int x, int y) {
     GetWindowRect(hwnd, &winRect);
     if (x > winRect.left && y > winRect.top && x < winRect.right && y < winRect.bottom) {
         if (resizable) {
-            int borderWidth = 4;
+            int borderWidth = 5;
             if (x < winRect.left + borderWidth && y < winRect.top + borderWidth) return HTTOPLEFT;
             else if (x < winRect.left + borderWidth && y > winRect.bottom - borderWidth) return HTBOTTOMLEFT;
             else if (x > winRect.right - borderWidth && y > winRect.bottom - borderWidth) return HTBOTTOMRIGHT;
@@ -67,12 +67,10 @@ LRESULT WindowFrameless::hitTest(int x, int y) {
             else if (y < winRect.top + borderWidth) return HTTOP;
             else if (y > winRect.bottom - borderWidth) return HTBOTTOM;
         }
-        //for (auto& box : this->captionArea)
-        //{
-        //    if (box.contains(x - winRect.left, y - winRect.top)) {
-        //        return HTCAPTION;
-        //    }
-        //}
+        auto ele = getElementByPosition(x - winRect.left, y - winRect.top);
+        if (ele->getCaption()) {
+            return HTCAPTION;
+        }
         return HTCLIENT;
     }
     else

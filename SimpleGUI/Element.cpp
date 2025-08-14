@@ -12,14 +12,22 @@ Element::~Element()
 {
 	YGNodeFreeRecursive(node);
 }
+
+Element* Element::getParent()
+{
+	return parent;
+}
+
 void Element::addChild(Element* ele)
 {
+	ele->parent = this;
 	YGNodeInsertChild(node, ele->node, YGNodeGetChildCount(node));
 	children.push_back(ele);
 }
 
 void Element::insertChild(const int& index, Element* ele)
 {
+	ele->parent = this;
 	YGNodeInsertChild(node, ele->node, index);
 	children.insert(children.begin() + index, ele);
 }
@@ -62,6 +70,16 @@ void Element::setRadius(float r)
 void Element::setRadius(float lt, float rt, float rb, float lb)
 {
 	radiusLT = lt; radiusRT = rt; radiusRB = rb; radiusLB = lb;
+}
+
+void Element::setCaption(bool flag)
+{
+	isCaption = flag;
+}
+
+bool Element::getCaption()
+{
+	return isCaption;
 }
 
 void Element::setSize(const float& w, const float& h)
@@ -131,6 +149,7 @@ void Element::setPadding(const Edge& type, const float& val)
 void Element::layout(const float& w, const float& h)
 {
 	YGNodeCalculateLayout(node, w, h, YGDirectionLTR);
+	calculateGlobalPos(children);
 }
 
 Position Element::getPosition()
@@ -145,6 +164,17 @@ Size Element::getSize()
 	float w = YGNodeLayoutGetWidth(node);
 	float h = YGNodeLayoutGetHeight(node);
 	return Size(w,h);
+}
+
+bool Element::hittest(const int& x, const int& y)
+{
+	float right = YGNodeLayoutGetWidth(node) + globalX;
+	float bottom = YGNodeLayoutGetHeight(node) + globalY;
+	if (x > globalX && y > globalY && x < right && y < bottom)
+	{
+		return true;
+	}
+	return false;
 }
 
 void Element::paint(SkCanvas* canvas)
@@ -187,5 +217,17 @@ void Element::paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& re
 	}
 	else {
 		canvas->drawRect(rect, paint);
+	}
+}
+
+void Element::calculateGlobalPos(const std::vector<Element*>& children)
+{
+	for (auto& child : children)
+	{
+		child->globalX = YGNodeLayoutGetLeft(child->node) + child->parent->globalX;
+		child->globalY = YGNodeLayoutGetTop(child->node) + child->parent->globalY;
+		if (child->children.size() > 0) {
+			calculateGlobalPos(child->children);
+		}
 	}
 }

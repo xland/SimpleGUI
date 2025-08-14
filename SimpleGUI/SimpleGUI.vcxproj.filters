@@ -45,6 +45,12 @@
     <ClCompile Include="private\WindowBaseImpl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MouseEvent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">
@@ -87,6 +93,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="FlexDirection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

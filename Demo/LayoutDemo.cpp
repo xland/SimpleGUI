@@ -1,4 +1,4 @@
-#include <WindowFrameless.h>
+﻿#include <WindowFrameless.h>
 #include <WindowNormal.h>
 
 #include "LayoutDemo.h"
@@ -6,6 +6,7 @@
 LayoutDemo::LayoutDemo() 
 {
     win = std::make_unique<WindowFrameless>();
+    win->setTitle(L"SkiaGUI 示例窗口");
     win->setWindowSize(1000, 800);
     win->setWindowToScreenCenter();
     win->setBackgroundColor(0xFF234567);
@@ -40,6 +41,7 @@ void LayoutDemo::topCenterBottom()
     auto top = new Element();
     top->setSize(SizeNaN, 80);
     top->setBackgroundColor(0xFF876543);
+    top->setCaption(true);
     win->addChild(top);
 
     auto center = new Element();
