@@ -22,6 +22,7 @@ void LayoutDemo::leftRight()
     auto left = new Element();
     left->setSize(300, SizeNaN);
     left->setBackgroundColor(0xFF876543);
+    left->setCaption(true);
     win->addChild(left);
 
     auto right = new Element();
@@ -59,8 +60,6 @@ void LayoutDemo::topCenterBottom()
     win->show();
 }
 
-
-
 void LayoutDemo::verticalHorizontalCenter()
 {
     win->setAlignItems(Align::Center);
@@ -68,8 +67,14 @@ void LayoutDemo::verticalHorizontalCenter()
     auto ele = new Element();
     ele->setSize(500, 500);
     ele->setBackgroundColor(0xFF876543);
+    ele->setCaption(true);
     win->addChild(ele);
 
     win->createNativeWindow();
     win->show();
+}
+
+void LayoutDemo::start()
+{
+    topCenterBottom();
 }

@@ -29,12 +29,13 @@ public:
 	void resetWindowPosition(const int& x, const int& y);
 	void resetWindowToScreenCenter();
 	Element* getElementByPosition(int x, int y);
+	HWND getHandle();
 public:
-	HWND hwnd;
 protected:
 	const std::wstring& getWinClsName();
 	virtual LRESULT CALLBACK customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 protected:
+	HWND hwnd;
 	std::unique_ptr<WindowBaseImpl> winImpl;
 	std::wstring title;
 	bool resizable{ true };

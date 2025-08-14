@@ -4,6 +4,7 @@
 #include "include/core/SkPaint.h"
 #include "include/core/SkRRect.h"
 #include "Element.h"
+#include "WindowBase.h"
 
 Element::Element():node{ YGNodeNew() }
 {
@@ -166,6 +167,15 @@ Size Element::getSize()
 	return Size(w,h);
 }
 
+WindowBase* Element::getWindow()
+{
+	Element* temp = this;
+	while (temp->parent) {
+		temp = temp->parent;
+	}
+	return (WindowBase*)temp;
+}
+
 bool Element::hittest(const int& x, const int& y)
 {
 	float right = YGNodeLayoutGetWidth(node) + globalX;
@@ -175,6 +185,16 @@ bool Element::hittest(const int& x, const int& y)
 		return true;
 	}
 	return false;
+}
+
+void Element::update()
+{
+	RECT r{ .left{(int)globalX},.top{(int)globalY},
+		.right{(int)YGNodeLayoutGetWidth(node) + (int)globalX},
+		.bottom{(int)YGNodeLayoutGetHeight(node) + (int)globalY}
+	};
+	auto hwnd = getWindow()->getHandle();
+	InvalidateRect(hwnd, &r, false);
 }
 
 void Element::paint(SkCanvas* canvas)

@@ -8,8 +8,8 @@
 
 void WindowNormal::createNativeWindow()
 {
-    auto pos = getPosition();
-    auto size = getSize();
+    auto pos = getWindowPosition();
+    auto size = getWindowSize();
     winImpl = std::make_unique<WindowBaseImpl>(size.w, size.h);
     hwnd = CreateWindowEx(WS_EX_APPWINDOW, getWinClsName().data(), title.data(), WS_OVERLAPPEDWINDOW,
         pos.x, pos.y, size.w, size.h, nullptr, nullptr, App::get()->hInstance, nullptr);

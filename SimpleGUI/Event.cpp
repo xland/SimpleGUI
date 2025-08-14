@@ -57,15 +57,21 @@ void Event::offMouseUp(const size_t& callbackId)
 
 void Event::mouseEnter(const MouseEvent& event)
 {
-	for (const auto& pair : mouseEnterCBs) {
-		 pair.second(event);
+	if (!isMouseEnter) {
+		isMouseEnter = true;
+		for (const auto& pair : mouseEnterCBs) {
+			pair.second(event);
+		}
 	}
 }
 
 void Event::mouseLeave(const MouseEvent& event)
 {
-	for (const auto& pair : mouseLeaveCBs) {
-		pair.second(event);
+	if (isMouseEnter) {
+		isMouseEnter = false;
+		for (const auto& pair : mouseLeaveCBs) {
+			pair.second(event);
+		}
 	}
 }
 

@@ -1,3 +1,7 @@
+#include "include/core/SkCanvas.h"
+#include "include/encode/SkPngEncoder.h"
+#include "include/core/SkStream.h"
+
 #include "../Element.h"
 #include "WindowBaseImpl.h"
 
@@ -21,7 +25,14 @@ void WindowBaseImpl::resize(const int& w, const int& h)
 void WindowBaseImpl::paintElement(Element* ele)
 {
     auto canvas = surface->getCanvas();
+    canvas->clear(0x000000);
     ele->paint(canvas);
+
+    //SkPixmap pixmap;
+    //surface->peekPixels(&pixmap);
+    //SkFILEWStream stream("allen1.png");
+    //SkPngEncoder::Encode(&stream, pixmap, {});
+    //stream.flush();
 }
 
 const SkPixmap WindowBaseImpl::getPix()

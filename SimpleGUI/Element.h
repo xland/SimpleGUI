@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 #include "Align.h"
 #include "Justify.h"
 #include "Edge.h"
@@ -13,6 +14,7 @@ struct SkRect;
 class SkCanvas;
 class SkPaint;
 class MouseEvent;
+class WindowBase;
 class Element:public Event
 {
 public:
@@ -46,8 +48,9 @@ public:
 	void paint(SkCanvas* canvas);
 	Position getPosition();
 	Size getSize();
+	WindowBase* getWindow();
 	bool hittest(const int& x, const int& y);
-	
+	void update();
 public:
 	friend class MouseEvent;
 protected:
@@ -57,7 +60,7 @@ private:
 	void paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& rect);
 	void calculateGlobalPos(const std::vector<Element*>& children);
 private:
-	Element* parent;
+	Element* parent{nullptr};
 	std::vector<Element*> children;
 	YGNode* node;
 	float borderWidth;
@@ -65,6 +68,5 @@ private:
 	Color bgColor{ 0x00000000 },borderColor{ 0x00000000 };
 	bool isCaption{ false };
 	float globalX{ 0 }, globalY{ 0 };
-
 };
 
