@@ -43,6 +43,8 @@ private:
 	static LRESULT CALLBACK routeWindowMsg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void windowMouseMove(const int& x, const int& y);
+	void windowMouseDown(const int& x, const int& y,const MouseButton& mouseBtn);
+	void windowMouseUp(const int& x, const int& y, const MouseButton& mouseBtn);
 	void paintArea();
 private:
 	/// <summary>
@@ -55,5 +57,6 @@ private:
 	/// 有边框窗口大小与Element大小不一致，因为有边框窗口大小包含边框和标题栏
 	/// </summary>
 	Size winSize;
+	Element* hoverEle{nullptr};
 };
 

@@ -1,7 +1,7 @@
 #include "MouseEvent.h"
 #include "Element.h"
 
-MouseEvent::MouseEvent(const int& x, const int& y) :globalX{ x }, globalY{y}
+MouseEvent::MouseEvent(const int& x, const int& y, const MouseButton& mouseBtn) :globalX{ x }, globalY{ y }, mouseBtn{ mouseBtn }
 {
 }
 

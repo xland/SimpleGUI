@@ -131,18 +131,11 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     //    return 1;
     //}
     case WM_PAINT: {
-        //PAINTSTRUCT ps;
-        //HDC hdc = BeginPaint(hwnd, &ps);
-        //EndPaint(hwnd, &ps);
         winImpl->paintElement(this);
         paintArea();
         return 0;
     }
     case WM_LBUTTONDBLCLK:
-    {
-        return 0;
-    }
-    case WM_RBUTTONDOWN:
     {
         return 0;
     }
@@ -153,10 +146,22 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     }
     case WM_LBUTTONDOWN:
     {
+        windowMouseDown(LOWORD(lParam), HIWORD(lParam), MouseButton::Left);
         return 0;
     }
     case WM_LBUTTONUP:
     {
+        windowMouseUp(LOWORD(lParam), HIWORD(lParam), MouseButton::Left);
+        return 0;
+    }
+    case WM_RBUTTONDOWN:
+    {
+        windowMouseDown(LOWORD(lParam), HIWORD(lParam), MouseButton::Right);
+        return 0;
+    }
+    case WM_RBUTTONUP:
+    {
+        windowMouseUp(LOWORD(lParam), HIWORD(lParam), MouseButton::Right);
         return 0;
     }
     case WM_KEYDOWN:
@@ -229,18 +234,82 @@ void WindowBase::windowMouseMove(const int& x, const int& y)
     MouseEvent e(x,y);
     auto ele = getElementByPosition(x, y);
     e.setRelativePosition(ele);
+    if (hoverEle != ele) {
+        if (hoverEle && !hoverEle->hittest(x,y)) {
+            hoverEle->mouseLeave(e);
+        }
+        ele->mouseEnter(e);
+    }
     ele->mouseMove(e);
-    ele->mouseEnter(e);
+    hoverEle = ele;
+}
+
+void WindowBase::windowMouseDown(const int& x, const int& y, const MouseButton& mouseBtn)
+{
+    MouseEvent e(x, y, mouseBtn);
+    e.setRelativePosition(hoverEle);
+    hoverEle->mouseDown(e);
+}
+
+void WindowBase::windowMouseUp(const int& x, const int& y, const MouseButton& mouseBtn)
+{
+    MouseEvent e(x, y, mouseBtn);
+    e.setRelativePosition(hoverEle);
+    hoverEle->mouseUp(e);
 }
 
 void WindowBase::paintArea()
 {
+    //PAINTSTRUCT ps;
+    //HDC hdc = BeginPaint(hwnd, &ps);
+    //auto size = getSize();
+    //auto pix = winImpl->getPix();
+    //BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), size.w, size.h, 1, 32, BI_RGB, size.h * 4 * size.w, 0, 0, 0, 0 };
+    //SetDIBitsToDevice(hdc, 0, 0, size.w, size.h, 0, 0, 0, size.h, pix.addr(), &bmi, DIB_RGB_COLORS);
+    //EndPaint(hwnd, &ps);
+
+
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
     auto size = getSize();
+    // 创建兼容DC和缓冲Bitmap
+    HDC memDC = CreateCompatibleDC(hdc);
+    HBITMAP memBitmap = CreateCompatibleBitmap(hdc, size.w, size.h);
+    HBITMAP oldBitmap = (HBITMAP)SelectObject(memDC, memBitmap);
+    BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), size.w, -size.h, 1, 32, BI_RGB, size.h * 4 * size.w, 0, 0, 0, 0 };
+
+    // 获取需要绘制的窗口区域（以窗口为坐标系）
+    RECT r = ps.rcPaint;
+    int xDest = r.left;
+    int yDest = r.top;
+    int destW = r.right - r.left;
+    int destH = r.bottom - r.top;
+
+    // 同步源图像区域（注意 top-down 图像坐标）
+    int xSrc = r.left;
+    int ySrc = r.top;
+
+    // Clip 防止越界
+    xSrc = std::clamp(xSrc, 0, size.w);
+    ySrc = std::clamp(ySrc, 0, size.h);
+    destW = std::clamp(destW, 0, size.w - xSrc);
+    destH = std::clamp(destH, 0, size.h - ySrc);
+
     auto pix = winImpl->getPix();
-    BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), size.w, size.h, 1, 32, BI_RGB, size.h * 4 * size.w, 0, 0, 0, 0 };
-    SetDIBitsToDevice(hdc, 0, 0, size.w, size.h, 0, 0, 0, size.h, pix.addr(), &bmi, DIB_RGB_COLORS);
+    // 仅绘制该区域
+    StretchDIBits(memDC, xDest, yDest, destW, destH,    // 目标区域（窗口）
+        xSrc, ySrc, destW, destH,      // 源区域（图像）
+        pix.addr(),
+        &bmi,
+        DIB_RGB_COLORS,
+        SRCCOPY);
+
+    // 复制到窗口DC
+    BitBlt(hdc, xDest, yDest, destW, destH, memDC, xDest, yDest, SRCCOPY);
+    // 清理资源
+    SelectObject(memDC, oldBitmap);
+    DeleteObject(memBitmap);
+    DeleteDC(memDC);
     EndPaint(hwnd, &ps);
 }
 

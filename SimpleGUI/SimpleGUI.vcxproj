@@ -183,6 +183,7 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="FlexDirection.h" />
     <ClInclude Include="Justify.h" />
+    <ClInclude Include="MouseButton.h" />
     <ClInclude Include="MouseEvent.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Size.h" />

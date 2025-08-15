@@ -22,13 +22,21 @@ void EventDemo::start() {
 
     auto ele = new Element();
     ele->setSize(120, 40);
-    ele->setBackgroundColor(0xFF876543);
+    ele->setBackgroundColor(0xFFFFFFFF);
     ele->onMouseEnter([ele](const MouseEvent& event) {
         ele->setBackgroundColor(0xFF000000);
         ele->update();
         });
     ele->onMouseLeave([ele](const MouseEvent& event) {
         ele->setBackgroundColor(0xFFFFFFFF);
+        ele->update();
+        });
+    ele->onMouseDown([ele](const MouseEvent& event) {
+        ele->setBackgroundColor(0xFF00FFFF);
+        ele->update();
+        });
+    ele->onMouseUp([ele](const MouseEvent& event) {
+        ele->setBackgroundColor(0xFFFFFF00);
         ele->update();
         });
     win->addChild(ele);

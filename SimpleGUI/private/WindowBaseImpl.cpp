@@ -24,7 +24,7 @@ void WindowBaseImpl::resize(const int& w, const int& h)
 
 void WindowBaseImpl::paintElement(Element* ele)
 {
-    auto canvas = surface->getCanvas();
+    auto canvas = surface->getCanvas(); //todo 不要每次重绘都全量绘制
     canvas->clear(0x000000);
     ele->paint(canvas);
 
