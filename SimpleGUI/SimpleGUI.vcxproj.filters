@@ -51,6 +51,15 @@
     <ClCompile Include="Event.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TextArea.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBlock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">
@@ -102,6 +111,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MouseButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBlock.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
