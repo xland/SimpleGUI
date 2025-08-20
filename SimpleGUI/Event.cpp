@@ -34,6 +34,13 @@ size_t Event::onMouseLeave(std::function<void(const MouseEvent&)> callback)
 	return mouseLeaveCBId;
 }
 
+size_t Event::onShown(std::function<void()> callback)
+{
+	shownCBId += 1;
+	shownCBs.insert({ mouseLeaveCBId,callback });
+	return mouseLeaveCBId;
+}
+
 void Event::offMouseEnter(const size_t& callbackId)
 {
 	mouseEnterCBs.erase(callbackId);
@@ -53,6 +60,10 @@ void Event::offMouseDown(const size_t& callbackId)
 void Event::offMouseUp(const size_t& callbackId)
 {
 	mouseUpCBs.erase(callbackId);
+}
+void Event::offShown(const size_t& callbackId)
+{
+	shownCBs.erase(callbackId);
 }
 
 void Event::mouseEnter(const MouseEvent& event)
@@ -87,6 +98,13 @@ void Event::mouseUp(const MouseEvent& event)
 {
 	for (const auto& pair : mouseUpCBs) {
 		pair.second(event);
+	}
+}
+
+void Event::shown()
+{
+	for (const auto& pair : shownCBs) {
+		pair.second();
 	}
 }
 

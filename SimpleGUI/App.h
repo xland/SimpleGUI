@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <thread>
 #include <Windows.h>
+
+struct YGConfig;
+class Element;
 class App
 {
 public:
@@ -14,10 +17,11 @@ public:
     static App* get();
     static int exec();
 public:
+    friend class Element;
     HINSTANCE hInstance;
 protected:
 private:
     App(HINSTANCE hInstance);
-    
+    YGConfig* getLayoutConfig();
 };
 

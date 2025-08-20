@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EventDemo.cpp" />
+    <ClCompile Include="InputDemo.cpp" />
     <ClCompile Include="LayoutDemo.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -154,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EventDemo.h" />
+    <ClInclude Include="InputDemo.h" />
     <ClInclude Include="LayoutDemo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

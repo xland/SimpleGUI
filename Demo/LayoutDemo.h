@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <WindowBase.h>
 class LayoutDemo

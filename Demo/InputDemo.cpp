@@ -1,4 +1,5 @@
-#include <WindowNormal.h>
+﻿#include <WindowNormal.h>
+#include <TextArea.h>
 #include "InputDemo.h"
 
 
@@ -21,25 +22,9 @@ void InputDemo::start() {
     win->setAlignItems(Align::Center);
     win->setJustifyContent(Justify::Center);
 
-    auto ele = new Element();
-    ele->setSize(120, 40);
+    auto ele = new TextArea();
+    ele->setSizePercent(100, 100);
     ele->setBackgroundColor(0xFFFFFFFF);
-    ele->onMouseEnter([ele](const MouseEvent& event) {
-        ele->setBackgroundColor(0xFF000000);
-        ele->update();
-        });
-    ele->onMouseLeave([ele](const MouseEvent& event) {
-        ele->setBackgroundColor(0xFFFFFFFF);
-        ele->update();
-        });
-    ele->onMouseDown([ele](const MouseEvent& event) {
-        ele->setBackgroundColor(0xFF00FFFF);
-        ele->update();
-        });
-    ele->onMouseUp([ele](const MouseEvent& event) {
-        ele->setBackgroundColor(0xFFFFFF00);
-        ele->update();
-        });
     win->addChild(ele);
 
     win->createNativeWindow();

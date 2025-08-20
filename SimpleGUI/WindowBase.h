@@ -6,8 +6,9 @@
 
 #include "Element.h"
 
+#define FlashTimer WM_APP+1
+
 class WindowBaseImpl;
-class Element;
 class WindowBase:public Element
 {
 public:

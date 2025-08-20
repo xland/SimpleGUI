@@ -6,8 +6,7 @@
 #include "private\WindowBaseImpl.h"
 
 WindowBase::WindowBase() :winPosition(0, 0), winSize(980, 680)
-{
-
+{    
 }
 WindowBase::~WindowBase() {
 
@@ -15,6 +14,7 @@ WindowBase::~WindowBase() {
 void WindowBase::show() {
     ShowWindow(hwnd, SW_SHOW);     // 或者 SW_SHOWNORMAL / SW_SHOWDEFAULT
     UpdateWindow(hwnd);
+    casecadeShown();
 }
 
 void WindowBase::resetWindowToScreenCenter()
@@ -130,6 +130,12 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     //{
     //    return 1;
     //}
+    case WM_TIMER: {
+        if (wParam == FlashTimer) {
+            auto a = 1;
+        }
+        return 0;
+    }
     case WM_PAINT: {
         winImpl->paintElement(this);
         paintArea();

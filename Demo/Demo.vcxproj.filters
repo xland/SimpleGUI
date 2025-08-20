@@ -24,12 +24,18 @@
     <ClCompile Include="EventDemo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="InputDemo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LayoutDemo.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="EventDemo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDemo.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

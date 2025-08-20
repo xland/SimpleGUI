@@ -5,10 +5,13 @@
 #include "include/core/SkRRect.h"
 #include "Element.h"
 #include "WindowBase.h"
+#include "App.h"
 
-Element::Element():node{ YGNodeNew() }
+Element::Element(): node{ YGNodeNewWithConfig(App::get()->getLayoutConfig())  }
 {
+	//YGNodeNew()
 }
+
 Element::~Element() 
 {
 	YGNodeFreeRecursive(node);
@@ -95,6 +98,19 @@ void Element::setWidth(const float& w)
 void Element::setHeight(const float& h)
 {
 	YGNodeStyleSetHeight(node, h);
+}
+void Element::setWidthPercent(const float& percent)
+{
+	YGNodeStyleSetWidthPercent(node, percent);
+}
+void Element::setHeightPercent(const float& percent)
+{
+	YGNodeStyleSetHeightPercent(node, percent);
+}
+void Element::setSizePercent(const float& w, const float& h)
+{
+	YGNodeStyleSetWidthPercent(node, w);
+	YGNodeStyleSetHeightPercent(node, h);
 }
 void Element::setBorderWidth(const float& width)
 {
@@ -249,5 +265,15 @@ void Element::calculateGlobalPos(const std::vector<Element*>& children)
 		if (child->children.size() > 0) {
 			calculateGlobalPos(child->children);
 		}
+	}
+}
+
+void Element::casecadeShown()
+{ 
+	//todo hide to show
+	shown();
+	for (auto& child : children)
+	{
+		child->casecadeShown();
 	}
 }

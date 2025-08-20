@@ -31,13 +31,16 @@ public:
 	void setFlexShrink(const float& val);
 	void setWidth(const float& w);
 	void setHeight(const float& h);
+	void setSize(const float& w, const float& h);
+	void setWidthPercent(const float& percent);
+	void setHeightPercent(const float& percent);
+	void setSizePercent(const float& w, const float& h);
 	void setMargin(const float& val);
 	void setMargin(const float& left, const float& top, const float& right, const float& bottom);
 	void setMargin(const Edge& type, const float& val);
 	void setPadding(const float& val);
 	void setPadding(const float& left, const float& top, const float& right, const float& bottom);
 	void setPadding(const Edge& type, const float& val);
-	void setSize(const float& w, const float& h);
 	void setBorderWidth(const float& width);
 	void setBorderColor(const Color& color); 
 	void setBackgroundColor(const Color& color);
@@ -55,6 +58,7 @@ public:
 	friend class MouseEvent;
 protected:
 	void layout(const float& w,const float& h);
+	void casecadeShown();
 protected:
 private:
 	void paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& rect);
