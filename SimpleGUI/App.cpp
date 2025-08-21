@@ -1,5 +1,6 @@
 ﻿#include <yoga/Yoga.h>
 #include "App.h"
+#include "FontManager.h"
 
 std::unique_ptr<App> app;
 YGConfig* layoutConfig;
@@ -26,7 +27,9 @@ App::~App() {
 
 void App::init(HINSTANCE hInstance)
 {
+    FontManager::init();
     app = std::unique_ptr<App>(new App(hInstance));//std::make_unique<App>(hInstance);
+
 }
 
 App* App::get() {

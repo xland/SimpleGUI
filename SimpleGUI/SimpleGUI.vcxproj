@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -166,7 +166,9 @@
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementBox.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Size.cpp" />
@@ -191,11 +193,16 @@
     <ClInclude Include="ElementBox.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FlexDirection.h" />
+    <ClInclude Include="FontManager.h" />
+    <ClInclude Include="FontSlant.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Justify.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="MouseButton.h" />
     <ClInclude Include="MouseEvent.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="FontWeight.h" />
+    <ClInclude Include="FontWidth.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="TextArea.h" />
     <ClInclude Include="TextArea\editor.h" />

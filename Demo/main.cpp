@@ -4,6 +4,7 @@
 #include "LayoutDemo.h"
 #include "EventDemo.h"
 #include "InputDemo.h"
+#include "TextDemo.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -11,7 +12,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     
     //LayoutDemo demo;
     //EventDemo demo;
-    InputDemo demo;
+    //InputDemo demo;
+    TextDemo demo;
     demo.start();
 
     return App::exec();

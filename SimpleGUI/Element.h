@@ -16,6 +16,8 @@ class SkPaint;
 class MouseEvent;
 class WindowBase;
 class ElementBox;
+class Label;
+class TextBlock;
 class Element:public Event
 {
 public:
@@ -61,6 +63,8 @@ public:
 public:
 	friend class MouseEvent;
 	friend class ElementBox;
+	friend class Label;
+	friend class TextBlock;
 protected:
 
 protected:
