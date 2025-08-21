@@ -1,4 +1,4 @@
-#include "include/core/SkCanvas.h"
+﻿#include "include/core/SkCanvas.h"
 #include "include/encode/SkPngEncoder.h"
 #include "include/core/SkStream.h"
 

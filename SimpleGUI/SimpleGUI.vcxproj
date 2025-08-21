@@ -128,7 +128,7 @@
     </Manifest>
     <Lib>
       <AdditionalLibraryDirectories>D:\sdk\yoga\build\yoga\$(Configuration);D:\sdk\skia\out\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>yogacore.lib;skia.lib;kernel32.lib;user32.lib;gdi32.lib;shell32.lib;imm32.lib;usp10.lib;dwmapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>yogacore.lib;skia.lib;kernel32.lib;user32.lib;gdi32.lib;shell32.lib;imm32.lib;usp10.lib;dwmapi.lib;skparagraph.lib;icu.lib;skunicode_core.lib;skunicode_icu.lib;skshaper.lib;harfbuzz.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +157,7 @@
     </Manifest>
     <Lib>
       <AdditionalLibraryDirectories>D:\sdk\yoga\build\yoga\$(Configuration);D:\sdk\skia\out\$(Configuration);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>yogacore.lib;skia.lib;kernel32.lib;user32.lib;gdi32.lib;shell32.lib;imm32.lib;usp10.lib;dwmapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>yogacore.lib;skia.lib;kernel32.lib;user32.lib;gdi32.lib;shell32.lib;imm32.lib;usp10.lib;dwmapi.lib;skparagraph.lib;icu.lib;skunicode_core.lib;skunicode_icu.lib;skshaper.lib;harfbuzz.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -171,6 +171,10 @@
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="TextArea.cpp" />
+    <ClCompile Include="TextArea\editor.cpp" />
+    <ClCompile Include="TextArea\shape.cpp" />
+    <ClCompile Include="TextArea\stringslice.cpp" />
+    <ClCompile Include="TextArea\word_boundaries.cpp" />
     <ClCompile Include="TextBlock.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="private\WindowBaseImpl.cpp" />
@@ -194,6 +198,11 @@
     <ClInclude Include="Position.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="TextArea.h" />
+    <ClInclude Include="TextArea\editor.h" />
+    <ClInclude Include="TextArea\shape.h" />
+    <ClInclude Include="TextArea\stringslice.h" />
+    <ClInclude Include="TextArea\stringview.h" />
+    <ClInclude Include="TextArea\word_boundaries.h" />
     <ClInclude Include="TextBlock.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="private\WindowBaseImpl.h" />

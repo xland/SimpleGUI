@@ -15,6 +15,11 @@ void TextArea::paint(SkCanvas* canvas)
 
 }
 
+void TextArea::setText(const std::wstring& text)
+{
+	this->text = text;
+}
+
 void TextArea::shown()
 {
 	Element::shown();

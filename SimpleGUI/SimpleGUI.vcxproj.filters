@@ -63,6 +63,18 @@
     <ClCompile Include="ElementBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TextArea\editor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TextArea\shape.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TextArea\stringslice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TextArea\word_boundaries.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">
@@ -126,6 +138,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ElementBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea\word_boundaries.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea\editor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea\shape.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea\stringslice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea\stringview.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
