@@ -15,19 +15,24 @@ class SkCanvas;
 class SkPaint;
 class MouseEvent;
 class WindowBase;
+class ElementBox;
 class Element:public Event
 {
 public:
 	Element();
 	~Element();
-	void addChild(Element* ele);
+	virtual std::vector<Element*>* getChildren() { return nullptr; };
+	virtual void paint(SkCanvas* canvas);
 	Element* getParent();
-	void insertChild(const int& index, Element* ele);
-	const std::vector<Element*>& getChildren();
-	void setJustifyContent(const Justify& val);
-	void setAlignItems(const Align& val);
-	void setFlexDirection(const FlexDirection& flexDirection);
+	/// <summary>
+	/// 此元素如何在父元素主轴方向上“长大”占据剩余空间
+	/// </summary>
+	/// <param name="val"></param>
 	void setFlexGrow(const float& val);
+	/// <summary>
+	/// 此元素如何在父元素主轴方向上“收缩”
+	/// </summary>
+	/// <param name="val"></param>
 	void setFlexShrink(const float& val);
 	void setWidth(const float& w);
 	void setHeight(const float& h);
@@ -48,7 +53,6 @@ public:
 	void setRadius(float lt, float rt, float rb, float lb);
 	void setCaption(bool flag);
 	bool getCaption();
-	void paint(SkCanvas* canvas);
 	Position getPosition();
 	Size getSize();
 	WindowBase* getWindow();
@@ -56,20 +60,20 @@ public:
 	void update();
 public:
 	friend class MouseEvent;
+	friend class ElementBox;
 protected:
-	void layout(const float& w,const float& h);
-	void casecadeShown();
+
 protected:
+
 private:
 	void paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& rect);
-	void calculateGlobalPos(const std::vector<Element*>& children);
 private:
-	Element* parent{nullptr};
-	std::vector<Element*> children;
+	Element* parent{ nullptr };
 	YGNode* node;
+	WindowBase* win;
 	float borderWidth;
 	float radiusLT{ 0.f }, radiusRT{ 0.f }, radiusRB{ 0.f }, radiusLB{ 0.f };
-	Color bgColor{ 0x00000000 },borderColor{ 0x00000000 };
+	Color bgColor{ 0x00000000 }, borderColor{ 0x00000000 };
 	bool isCaption{ false };
 	float globalX{ 0 }, globalY{ 0 };
 };

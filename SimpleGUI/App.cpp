@@ -12,7 +12,7 @@ App::App(HINSTANCE hInstance):hInstance{hInstance}
         MessageBox(NULL, L"Failed to initialize COM library", L"Error", MB_OK | MB_ICONERROR);
     }
     layoutConfig = YGConfigNew();
-    //YGConfigSetPointScaleFactor(layoutConfig, 1.5f); //todo
+    YGConfigSetPointScaleFactor(layoutConfig, 1.5f); //todo
 }
 
 YGConfig* App::getLayoutConfig()

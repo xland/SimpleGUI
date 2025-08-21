@@ -7,6 +7,7 @@ class TextArea :public Element
 public:
 	TextArea();
 	~TextArea();
+	void paint(SkCanvas* canvas) override;
 protected:
 	void shown() override;
 private:

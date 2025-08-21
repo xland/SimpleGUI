@@ -4,12 +4,13 @@
 #include <string>
 #include <memory>
 
-#include "Element.h"
+#include "ElementBox.h"
 
-#define FlashTimer WM_APP+1
+#define FlashCaretTimer WM_APP+1
 
 class WindowBaseImpl;
-class WindowBase:public Element
+class TextArea;
+class WindowBase:public ElementBox
 {
 public:
 	WindowBase();
@@ -32,6 +33,7 @@ public:
 	Element* getElementByPosition(int x, int y);
 	HWND getHandle();
 public:
+	friend class TextArea;
 protected:
 	const std::wstring& getWinClsName();
 	virtual LRESULT CALLBACK customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -47,6 +49,7 @@ private:
 	void windowMouseDown(const int& x, const int& y,const MouseButton& mouseBtn);
 	void windowMouseUp(const int& x, const int& y, const MouseButton& mouseBtn);
 	void paintArea();
+
 private:
 	/// <summary>
 	/// 窗口在屏幕上的位置
@@ -58,6 +61,7 @@ private:
 	/// 有边框窗口大小与Element大小不一致，因为有边框窗口大小包含边框和标题栏
 	/// </summary>
 	Size winSize;
-	Element* hoverEle{nullptr};
+	Element* hoverEle{ nullptr };
+	Element* focusEle{ nullptr };
 };
 

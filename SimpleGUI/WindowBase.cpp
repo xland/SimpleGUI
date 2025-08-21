@@ -120,7 +120,7 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
         int w{ LOWORD(lParam) }, h{ HIWORD(lParam) };
         setSize(w,h);
         winImpl->resize(w, h);
-        layout(w, h);
+        layout(w, h,this);
         return 0;
     }
     //case WM_SETCURSOR: {
@@ -131,7 +131,7 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     //    return 1;
     //}
     case WM_TIMER: {
-        if (wParam == FlashTimer) {
+        if (wParam == FlashCaretTimer) {
             auto a = 1;
         }
         return 0;
@@ -349,16 +349,16 @@ const std::wstring& WindowBase::getWinClsName()
 Element* WindowBase::getElementByPosition(int x, int y)
 {
     Element* result = this;
-    auto children = &result->getChildren();
-    while (children->size() > 0) {
+    auto children = result->getChildren();
+    while (children && children->size() > 0) {
         bool flag{ false };
-        for (auto& child : *children) //遍历子元素
+        for (auto child : *children) //遍历子元素
         {
             if (child->hittest(x,y)) //命中测试
             {
                 flag = true;
                 result = child;
-                children = &result->getChildren();
+                children = result->getChildren();
                 break; //结束本层级的遍历，开始遍历下一个层级，找到最底层的元素
             }
         }

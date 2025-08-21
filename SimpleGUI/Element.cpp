@@ -22,40 +22,6 @@ Element* Element::getParent()
 	return parent;
 }
 
-void Element::addChild(Element* ele)
-{
-	ele->parent = this;
-	YGNodeInsertChild(node, ele->node, YGNodeGetChildCount(node));
-	children.push_back(ele);
-}
-
-void Element::insertChild(const int& index, Element* ele)
-{
-	ele->parent = this;
-	YGNodeInsertChild(node, ele->node, index);
-	children.insert(children.begin() + index, ele);
-}
-
-const std::vector<Element*>& Element::getChildren() 
-{
-	return children;
-}
-
-void Element::setJustifyContent(const Justify& val)
-{
-	YGNodeStyleSetJustifyContent(node, (YGJustify)val);
-}
-
-void Element::setAlignItems(const Align& val)
-{
-	YGNodeStyleSetAlignItems(node, (YGAlign)val);
-}
-
-void Element::setFlexDirection(const FlexDirection& flexDirection)
-{
-	YGNodeStyleSetFlexDirection(node, (YGFlexDirection)flexDirection);
-}
-
 void Element::setFlexGrow(const float& val)
 {
 	YGNodeStyleSetFlexGrow(node, val);
@@ -163,12 +129,6 @@ void Element::setPadding(const Edge& type, const float& val)
 	YGNodeStyleSetPadding(node, (YGEdge)type,val);
 }
 
-void Element::layout(const float& w, const float& h)
-{
-	YGNodeCalculateLayout(node, w, h, YGDirectionLTR);
-	calculateGlobalPos(children);
-}
-
 Position Element::getPosition()
 {
 	float x = YGNodeLayoutGetLeft(node);
@@ -185,11 +145,7 @@ Size Element::getSize()
 
 WindowBase* Element::getWindow()
 {
-	Element* temp = this;
-	while (temp->parent) {
-		temp = temp->parent;
-	}
-	return (WindowBase*)temp;
+	return win;
 }
 
 bool Element::hittest(const int& x, const int& y)
@@ -235,13 +191,7 @@ void Element::paint(SkCanvas* canvas)
 		paint.setStyle(SkPaint::kStroke_Style);
 		paintRect(canvas, paint, rect);
 	}
-	for (size_t i = 0; i < children.size(); i++)
-	{
-		canvas->save();
-		canvas->translate(x, y);
-		children[i]->paint(canvas);
-		canvas->restore();
-	}
+
 }
 void Element::paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& rect)
 {
@@ -256,24 +206,4 @@ void Element::paintRect(SkCanvas* canvas, const SkPaint& paint, const SkRect& re
 	}
 }
 
-void Element::calculateGlobalPos(const std::vector<Element*>& children)
-{
-	for (auto& child : children)
-	{
-		child->globalX = YGNodeLayoutGetLeft(child->node) + child->parent->globalX;
-		child->globalY = YGNodeLayoutGetTop(child->node) + child->parent->globalY;
-		if (child->children.size() > 0) {
-			calculateGlobalPos(child->children);
-		}
-	}
-}
 
-void Element::casecadeShown()
-{ 
-	//todo hide to show
-	shown();
-	for (auto& child : children)
-	{
-		child->casecadeShown();
-	}
-}
