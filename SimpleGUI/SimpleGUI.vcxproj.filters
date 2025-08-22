@@ -42,7 +42,7 @@
     <ClCompile Include="Size.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="private\WindowBaseImpl.cpp">
+    <ClCompile Include="Private\WindowBaseImpl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MouseEvent.cpp">
@@ -119,7 +119,7 @@
     <ClInclude Include="Size.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="private\WindowBaseImpl.h">
+    <ClInclude Include="Private\WindowBaseImpl.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="FlexDirection.h">
@@ -179,5 +179,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ToDo.md" />
+    <None Include="Doc\Todo.md" />
   </ItemGroup>
 </Project>

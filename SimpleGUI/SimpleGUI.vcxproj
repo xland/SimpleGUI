@@ -179,7 +179,7 @@
     <ClCompile Include="TextArea\word_boundaries.cpp" />
     <ClCompile Include="TextBlock.cpp" />
     <ClCompile Include="Util.cpp" />
-    <ClCompile Include="private\WindowBaseImpl.cpp" />
+    <ClCompile Include="Private\WindowBaseImpl.cpp" />
     <ClCompile Include="WindowFrameless.cpp" />
     <ClCompile Include="WindowNormal.cpp" />
     <ClCompile Include="WindowBase.cpp" />
@@ -212,12 +212,13 @@
     <ClInclude Include="TextArea\word_boundaries.h" />
     <ClInclude Include="TextBlock.h" />
     <ClInclude Include="Util.h" />
-    <ClInclude Include="private\WindowBaseImpl.h" />
+    <ClInclude Include="Private\WindowBaseImpl.h" />
     <ClInclude Include="WindowFrameless.h" />
     <ClInclude Include="WindowNormal.h" />
     <ClInclude Include="WindowBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Doc\Todo.md" />
     <None Include="ToDo.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
