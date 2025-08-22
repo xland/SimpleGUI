@@ -26,8 +26,8 @@ void TextDemo::label()
     ele->setText(u8R"(醉里挑灯看剑，梦回吹角连营。
 八百里分麾下炙，五十弦翻塞外声。
 沙场秋点兵。)");
-    ele->setFont();
-    ele->setFontSize(22);
+    ele->setFont("STSong");
+    ele->setFontSize(32);
     ele->setBackgroundColor(0xFFFFFFFF);
     win->addChild(ele);
 }
