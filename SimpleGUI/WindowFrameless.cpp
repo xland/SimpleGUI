@@ -16,19 +16,15 @@ void WindowFrameless::createNativeWindow()
 {
     auto pos = getWindowPosition();
     auto size = getWindowSize();
-    winImpl = std::make_unique<WindowBaseImpl>(size.w, size.h);
     hwnd = CreateWindowEx(WS_EX_APPWINDOW, getWinClsName().data(), title.data(), WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
         pos.x, pos.y, size.w, size.h, nullptr, nullptr, App::get()->hInstance, nullptr);
     SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-
     MARGINS margins = { -1, -1, -1, -1 };
     DwmExtendFrameIntoClientArea(hwnd, &margins);
     int value = 2;
     DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &value, sizeof(value));
     DwmSetWindowAttribute(hwnd, DWMWA_ALLOW_NCPAINT, &value, sizeof(value));
-
-    winImpl->resize(size.w, size.h);
-    layout(size.w, size.h);
+    winImpl = std::make_unique<WindowBaseImpl>(this);
 }
 
 LRESULT WindowFrameless::customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

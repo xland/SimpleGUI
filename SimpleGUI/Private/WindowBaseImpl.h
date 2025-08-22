@@ -4,15 +4,18 @@
 #include <include/core/SkColorSpace.h>
 
 class Element;
+class WindowBase;
 class WindowBaseImpl
 {
 public:
-	WindowBaseImpl(const int& w, const int& h);
+	WindowBaseImpl(WindowBase* win);
 	~WindowBaseImpl();
-	void resize(const int& w, const int& h);
+	void reset();
 	void paintElement(Element* ele);
 	const SkPixmap getPix();
 private:
+private:
 	sk_sp<SkSurface> surface;
+	WindowBase* win;
 };
 

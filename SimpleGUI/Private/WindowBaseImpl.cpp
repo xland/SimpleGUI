@@ -3,29 +3,24 @@
 #include <include/core/SkStream.h>
 
 #include "../Element.h"
+#include "../WindowBase.h"
 #include "WindowBaseImpl.h"
 
 
-WindowBaseImpl::WindowBaseImpl(const int& w, const int& h)
+WindowBaseImpl::WindowBaseImpl(WindowBase* win):win{win}
 {
-    SkImageInfo info = SkImageInfo::MakeN32Premul(w, h);
-    surface = SkSurfaces::Raster(info);
+    reset();
 }
 
 WindowBaseImpl::~WindowBaseImpl()
 {
-}
-void WindowBaseImpl::resize(const int& w, const int& h)
-{
-    surface.reset(nullptr);
-    SkImageInfo info = SkImageInfo::MakeN32Premul(w, h);
-    surface = SkSurfaces::Raster(info);
 }
 
 void WindowBaseImpl::paintElement(Element* ele)
 {
     auto canvas = surface->getCanvas(); //todo 不要每次重绘都全量绘制
     canvas->clear(0x000000);
+    canvas->scale(win->scaleFactor, win->scaleFactor);
     ele->paint(canvas);
 
     //SkPixmap pixmap;
@@ -40,4 +35,14 @@ const SkPixmap WindowBaseImpl::getPix()
     SkPixmap pix;
     surface->peekPixels(&pix);
     return pix;
+}
+
+void WindowBaseImpl::reset()
+{
+    surface.reset(nullptr);
+    auto size = win->getWindowClientSize();
+    win->setSize(size.w, size.h);
+    SkImageInfo info = SkImageInfo::MakeN32Premul(size.w * win->scaleFactor, size.h * win->scaleFactor); //
+    surface = SkSurfaces::Raster(info);
+    win->layout(win);
 }

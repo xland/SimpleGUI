@@ -24,7 +24,7 @@ public:
 	/// </summary>
 	/// <param name="flexDirection"></param>
 	void setFlexDirection(const FlexDirection& flexDirection);
-	void layout(const float& w, const float& h, WindowBase* win = nullptr);
+	void layout(WindowBase* win = nullptr);
 protected:
 	void casecadeShown();
 private:

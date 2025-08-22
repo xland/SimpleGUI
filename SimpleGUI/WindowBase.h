@@ -3,13 +3,14 @@
 #include <windowsx.h>
 #include <string>
 #include <memory>
-
+#include "Size.h"
 #include "ElementBox.h"
 
 #define FlashCaretTimer WM_APP+1
 
 class WindowBaseImpl;
 class TextArea;
+class Label;
 class WindowBase:public ElementBox
 {
 public:
@@ -22,7 +23,7 @@ public:
 
 	const Position& getWindowPosition();
 	const Size& getWindowSize();
-
+	const Size getWindowClientSize();
 	void setWindowSize(const int& w, const int& h);
 	void setWindowPosition(const int& x, const int& y);
 	void setWindowToScreenCenter();
@@ -34,14 +35,18 @@ public:
 	HWND getHandle();
 public:
 	friend class TextArea;
+	friend class WindowBaseImpl;
+	friend class Label;
 protected:
 	const std::wstring& getWinClsName();
+	void setScaleFactor();
 	virtual LRESULT CALLBACK customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 protected:
 	HWND hwnd;
 	std::unique_ptr<WindowBaseImpl> winImpl;
 	std::wstring title;
 	bool resizable{ true };
+	float scaleFactor{ 1.f };
 private:
 	static LRESULT CALLBACK routeWindowMsg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

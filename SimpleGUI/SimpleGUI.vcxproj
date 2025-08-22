@@ -166,7 +166,6 @@
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementBox.cpp" />
     <ClCompile Include="Event.cpp" />
-    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
@@ -193,7 +192,6 @@
     <ClInclude Include="ElementBox.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FlexDirection.h" />
-    <ClInclude Include="FontManager.h" />
     <ClInclude Include="FontSlant.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Justify.h" />

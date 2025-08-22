@@ -75,9 +75,12 @@ void ElementBox::casecadeShown()
 		}
 	}
 }
-void ElementBox::layout(const float& w, const float& h, WindowBase* win)
+void ElementBox::layout(WindowBase* win)
 {
 	if (win) this->win = win;
-	YGNodeCalculateLayout(node, w, h, YGDirectionLTR);
+	//auto w = YGNodeStyleGetWidth(node).value;
+	//auto h = YGNodeStyleGetHeight(node).value;
+	//YGNodeCalculateLayout(node, w, h, YGDirectionLTR);
+	YGNodeCalculateLayout(node, YGUndefined, YGUndefined, YGDirectionLTR);
 	calculateGlobalPos(&children, win);
 }

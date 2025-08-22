@@ -15,6 +15,7 @@ void WindowBase::show() {
     ShowWindow(hwnd, SW_SHOW);     // 或者 SW_SHOWNORMAL / SW_SHOWDEFAULT
     UpdateWindow(hwnd);
     casecadeShown();
+
 }
 
 void WindowBase::resetWindowToScreenCenter()
@@ -56,6 +57,15 @@ const Position& WindowBase::getWindowPosition()
 const Size& WindowBase::getWindowSize()
 {
     return winSize;
+}
+
+const Size WindowBase::getWindowClientSize()
+{
+    RECT clientRect;
+    GetClientRect(hwnd, &clientRect);
+    Size s(clientRect.right - clientRect.left,
+        clientRect.bottom - clientRect.top);
+    return s;
 }
 
 void WindowBase::resetWindowSize(const int& w, const int& h)
@@ -118,9 +128,20 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     case WM_SIZE:
     {
         int w{ LOWORD(lParam) }, h{ HIWORD(lParam) };
-        setSize(w,h);
-        winImpl->resize(w, h);
-        layout(w, h,this);
+        setWindowSize(w, h);
+        winImpl->reset();
+        return 0;
+    }
+    case WM_DPICHANGED:
+    {
+        RECT* suggestedRect = reinterpret_cast<RECT*>(lParam);
+        SetWindowPos(hwnd, nullptr,
+            suggestedRect->left, suggestedRect->top,
+            suggestedRect->right - suggestedRect->left,
+            suggestedRect->bottom - suggestedRect->top,
+            SWP_NOZORDER | SWP_NOACTIVATE);
+        setScaleFactor();
+        winImpl->reset();
         return 0;
     }
     //case WM_SETCURSOR: {
@@ -266,15 +287,58 @@ void WindowBase::windowMouseUp(const int& x, const int& y, const MouseButton& mo
 
 void WindowBase::paintArea()
 {
-    //PAINTSTRUCT ps;
-    //HDC hdc = BeginPaint(hwnd, &ps);
-    //auto size = getSize();
-    //auto pix = winImpl->getPix();
-    //BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), size.w, size.h, 1, 32, BI_RGB, size.h * 4 * size.w, 0, 0, 0, 0 };
-    //SetDIBitsToDevice(hdc, 0, 0, size.w, size.h, 0, 0, 0, size.h, pix.addr(), &bmi, DIB_RGB_COLORS);
-    //EndPaint(hwnd, &ps);
+    auto size = getWindowClientSize();
+    auto w = size.w * scaleFactor;
+    auto h = size.h * scaleFactor;
+    auto pix = winImpl->getPix();
 
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(hwnd, &ps);
+    HDC memDC = CreateCompatibleDC(hdc); //创建兼容的内存 DC 和位图
+    // 创建与窗口 DC 兼容的位图 (尺寸使用逻辑尺寸，因为 StretchDIBits 会先缩放到 memDC)
+    HBITMAP memBitmap = CreateCompatibleBitmap(hdc, size.w, size.h);
+    HBITMAP oldBitmap = (HBITMAP)SelectObject(memDC, memBitmap);
+    SetStretchBltMode(memDC, MAXSTRETCHBLTMODE);
+    BITMAPINFO bmi = { 0 };
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = w;       // 源图像宽度 (物理像素)
+    bmi.bmiHeader.biHeight = -h;    // 源图像高度 (负值表示 top-down)
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 32;             // 32 bits per pixel
+    bmi.bmiHeader.biCompression = BI_RGB;      // *** 注意颜色格式匹配问题 ***
+    bmi.bmiHeader.biSizeImage = 0;             // 对 BI_RGB 可设为 0
 
+    // 5. 使用 StretchDIBits 将 Skia Pixmap 缩放并绘制到内存 DC
+    //    源: pix (physicalWidth x physicalHeight pixels at pix.addr())
+    //    目标: memDC (logicSize.w x logicSize.h pixels)
+    int stretchResult = StretchDIBits(
+        memDC,                          // 目标 DC
+        0, 0,                           // 目标 X, Y (逻辑像素)
+        size.w, size.h,       // 目标宽度, 高度 (逻辑像素)
+        0, 0,                           // 源 X, Y (物理像素)
+        w, h,      // 源宽度, 高度 (物理像素)
+        pix.addr(),                     // 源像素数据指针
+        &bmi,                           // 源图像信息
+        DIB_RGB_COLORS,                 // 颜色使用方式
+        SRCCOPY                         // 光栅操作代码
+    );
+    // 6. 将内存 DC 的内容 (已缩放好的逻辑尺寸图像) BitBlt 到窗口 DC
+    //    复制的区域大小是 StretchDIBits 绘制到 memDC 的区域大小 (逻辑像素)
+    BitBlt(
+        hdc,                            // 目标 DC (窗口 DC)
+        0, 0,                           // 目标 X, Y
+        size.w, size.h,       // 复制的宽度, 高度 (逻辑像素)
+        memDC,                          // 源 DC (内存 DC)
+        0, 0,                           // 源 X, Y
+        SRCCOPY                         // 光栅操作代码
+    );
+
+    // 7. 清理 GDI 对象
+    SelectObject(memDC, oldBitmap); // 恢复内存 DC 的旧位图
+    DeleteObject(memBitmap);        // 删除我们创建的位图
+    DeleteDC(memDC);                // 删除内存 DC
+    EndPaint(hwnd, &ps);
+    /*
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
     auto size = getSize();
@@ -317,6 +381,7 @@ void WindowBase::paintArea()
     DeleteObject(memBitmap);
     DeleteDC(memDC);
     EndPaint(hwnd, &ps);
+    */
 }
 
 LRESULT CALLBACK WindowBase::customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -344,6 +409,12 @@ const std::wstring& WindowBase::getWinClsName()
         return wcex.lpszClassName;
         }();
     return clsName;
+}
+
+void WindowBase::setScaleFactor()
+{
+    UINT dpi = GetDpiForWindow(hwnd);
+    scaleFactor = dpi / 96.0f;
 }
 
 Element* WindowBase::getElementByPosition(int x, int y)

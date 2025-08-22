@@ -75,9 +75,6 @@
     <ClCompile Include="TextArea\word_boundaries.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="FontManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Label.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -159,9 +156,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="TextArea\stringview.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FontManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Label.h">

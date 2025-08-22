@@ -4,6 +4,7 @@
 
 struct YGConfig;
 class Element;
+class SkFontMgr;
 class App
 {
 public:
@@ -15,6 +16,7 @@ public:
     ~App();
     static void init(HINSTANCE hInstance);
     static App* get();
+    static SkFontMgr* getFontMgr();
     static int exec();
 public:
     friend class Element;
