@@ -9,7 +9,6 @@
 
 WindowBaseImpl::WindowBaseImpl(WindowBase* win):win{win}
 {
-    reset();
 }
 
 WindowBaseImpl::~WindowBaseImpl()
@@ -42,7 +41,6 @@ void WindowBaseImpl::reset()
     surface.reset(nullptr);
     auto size = win->getWindowClientSize();
     win->setSize(size.w, size.h);
-    SkImageInfo info = SkImageInfo::MakeN32Premul(size.w * win->scaleFactor, size.h * win->scaleFactor); //
+    SkImageInfo info = SkImageInfo::MakeN32Premul(size.w * win->scaleFactor, size.h * win->scaleFactor);
     surface = SkSurfaces::Raster(info);
-    win->layout(win);
 }

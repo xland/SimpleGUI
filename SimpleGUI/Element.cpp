@@ -12,9 +12,8 @@
 #include "WindowBase.h"
 #include "App.h"
 
-Element::Element(): node{ YGNodeNewWithConfig(App::get()->getLayoutConfig())  }
+Element::Element(): node{ YGNodeNewWithConfig(App::get()->getLayoutConfig())  }//YGNodeNew()
 {
-	//YGNodeNew()
 }
 
 Element::~Element() 

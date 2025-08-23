@@ -2,6 +2,14 @@
 #include <include/core/SkCanvas.h>
 #include "ElementBox.h"
 
+ElementBox::ElementBox()
+{
+}
+
+ElementBox::~ElementBox()
+{
+}
+
 void ElementBox::addChild(Element* ele)
 {
 	ele->parent = this;
@@ -15,6 +23,7 @@ void ElementBox::insertChild(const int& index, Element* ele)
 	YGNodeInsertChild(node, ele->node, index);
 	children.insert(children.begin() + index, ele);
 }
+
 
 void ElementBox::paint(SkCanvas* canvas)
 {
@@ -48,13 +57,12 @@ void ElementBox::setFlexDirection(const FlexDirection& flexDirection)
 {
 	YGNodeStyleSetFlexDirection(node, (YGFlexDirection)flexDirection);
 }
-void ElementBox::calculateGlobalPos(std::vector<Element*>* children, WindowBase* win)
+void ElementBox::calculateGlobalPos(std::vector<Element*>* children)
 {
 	for (auto& child : *children)
 	{
 		child->globalX = YGNodeLayoutGetLeft(child->node) + child->parent->globalX;
 		child->globalY = YGNodeLayoutGetTop(child->node) + child->parent->globalY;
-		if (win) child->win = win;
 		auto children = child->getChildren();
 		if (children && children->size() > 0) {
 			calculateGlobalPos(children);
@@ -75,12 +83,8 @@ void ElementBox::casecadeShown()
 		}
 	}
 }
-void ElementBox::layout(WindowBase* win)
+void ElementBox::layout()
 {
-	if (win) this->win = win;
-	//auto w = YGNodeStyleGetWidth(node).value;
-	//auto h = YGNodeStyleGetHeight(node).value;
-	//YGNodeCalculateLayout(node, w, h, YGDirectionLTR);
 	YGNodeCalculateLayout(node, YGUndefined, YGUndefined, YGDirectionLTR);
-	calculateGlobalPos(&children, win);
+	calculateGlobalPos(&children);
 }

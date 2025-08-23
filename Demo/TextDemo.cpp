@@ -12,6 +12,7 @@ TextDemo::TextDemo()
     win->setWindowSize(1000, 800);
     win->setWindowToScreenCenter();
     win->setBackgroundColor(0xFFDDDDDD);
+    win->createNativeWindow();
 }
 
 TextDemo::~TextDemo()
@@ -20,15 +21,14 @@ TextDemo::~TextDemo()
 
 void TextDemo::label()
 {
+    auto ele = new Label();
+    ele->setText(u8R"(醉里挑灯看剑，梦回吹角连营。 八百里分麾下炙，五十弦翻塞外声。 沙场秋点兵。)");
+    ele->setFont("STSong");
+    ele->setFontSize(16);
+    ele->setBackgroundColor(0xFFFFFFFF);
+
     win->setAlignItems(Align::Center);
     win->setJustifyContent(Justify::Center);
-    auto ele = new Label();
-    ele->setText(u8R"(醉里挑灯看剑，梦回吹角连营。
-八百里分麾下炙，五十弦翻塞外声。
-沙场秋点兵。)");
-    ele->setFont("STSong");
-    ele->setFontSize(32);
-    ele->setBackgroundColor(0xFFFFFFFF);
     win->addChild(ele);
 }
 
@@ -49,10 +49,7 @@ void TextDemo::textblock()
 }
 
 void TextDemo::start() {
-
-
     //textblock();
     label();
-    win->createNativeWindow();
     win->show();
 }

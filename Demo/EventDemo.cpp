@@ -9,6 +9,7 @@ EventDemo::EventDemo()
     win->setWindowSize(1000, 800);
     win->setWindowToScreenCenter();
     win->setBackgroundColor(0xFF234567);
+    win->createNativeWindow();
 }
 
 EventDemo::~EventDemo()
@@ -16,10 +17,6 @@ EventDemo::~EventDemo()
 }
 
 void EventDemo::start() {
-
-    win->setAlignItems(Align::Center);
-    win->setJustifyContent(Justify::Center);
-
     auto ele = new Element();
     ele->setSize(120, 40);
     ele->setBackgroundColor(0xFFFFFFFF);
@@ -39,8 +36,9 @@ void EventDemo::start() {
         ele->setBackgroundColor(0xFFFFFF00);
         ele->update();
         });
+    win->setAlignItems(Align::Center);
+    win->setJustifyContent(Justify::Center);
     win->addChild(ele);
-
-    win->createNativeWindow();
+    win->layout();    
     win->show();
 }

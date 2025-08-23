@@ -11,6 +11,7 @@ InputDemo::InputDemo()
     win->setWindowSize(1000, 800);
     win->setWindowToScreenCenter();
     win->setBackgroundColor(0xFFFFFFFF);
+    win->createNativeWindow();
 }
 
 InputDemo::~InputDemo()
@@ -19,8 +20,7 @@ InputDemo::~InputDemo()
 
 void InputDemo::start() {
 
-    win->setAlignItems(Align::Center);
-    win->setJustifyContent(Justify::Center);
+
 
     auto ele = new TextArea();
 //    ele->setText(uR"(醉里挑灯看剑，梦回吹角连营。
@@ -31,9 +31,11 @@ void InputDemo::start() {
 //可怜白发生！)");
     ele->setSizePercent(100, 100);
     ele->setBackgroundColor(0xFFFFFFFF);
+    win->setAlignItems(Align::Center);
+    win->setJustifyContent(Justify::Center);
     win->addChild(ele);
-
-    win->createNativeWindow();
+    win->layout();
+    
     win->show();
 }
 

@@ -15,7 +15,6 @@ void WindowBase::show() {
     ShowWindow(hwnd, SW_SHOW);     // 或者 SW_SHOWNORMAL / SW_SHOWDEFAULT
     UpdateWindow(hwnd);
     casecadeShown();
-
 }
 
 void WindowBase::resetWindowToScreenCenter()
@@ -47,6 +46,30 @@ void WindowBase::setTitle(const std::wstring& title)
 const std::wstring& WindowBase::getTitle()
 {
     return title;
+}
+
+void WindowBase::insertChild(const int& index, Element* ele)
+{
+    ElementBox::insertChild(index, ele);
+    casecadeSetWindow(ele);
+}
+
+void WindowBase::addChild(Element* ele)
+{
+    ElementBox::addChild(ele);
+    casecadeSetWindow(ele);
+}
+
+void WindowBase::casecadeSetWindow(Element* ele)
+{
+    ele->win = this;
+    auto box = dynamic_cast<ElementBox*>(ele);
+    if (box) {
+        for (auto e: *(box->getChildren()))
+        {
+            casecadeSetWindow(e);
+        }
+    }
 }
 
 const Position& WindowBase::getWindowPosition()
@@ -130,6 +153,7 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
         int w{ LOWORD(lParam) }, h{ HIWORD(lParam) };
         setWindowSize(w, h);
         winImpl->reset();
+        layout();
         return 0;
     }
     case WM_DPICHANGED:
@@ -147,10 +171,10 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     //case WM_SETCURSOR: {
     //    return 1;
     //}
-    //case WM_ERASEBKGND:
-    //{
-    //    return 1;
-    //}
+    case WM_ERASEBKGND:
+    {
+        return 1;
+    }
     case WM_TIMER: {
         if (wParam == FlashCaretTimer) {
             auto a = 1;
@@ -384,6 +408,8 @@ void WindowBase::paintArea()
     */
 }
 
+
+
 LRESULT CALLBACK WindowBase::customMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -443,4 +469,9 @@ Element* WindowBase::getElementByPosition(int x, int y)
 HWND WindowBase::getHandle()
 {
     return hwnd;
+}
+
+float WindowBase::getScaleFactor()
+{
+    return scaleFactor;
 }

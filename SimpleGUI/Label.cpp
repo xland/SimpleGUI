@@ -10,10 +10,12 @@
 #include "Label.h"
 #include "WindowBase.h"
 
-static YGSize measureWidget(YGNodeConstRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode) {
+static YGSize measure(YGNodeConstRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode) {
     auto label = static_cast<Label*>(YGNodeGetContext(node));
     auto& text = label->getText();
     auto font = label->getFont();
+    auto win = label->getWindow();
+    font->setSize(label->getFontSize() * win->getScaleFactor());
     SkRect r;
     font->measureText(text.data(), text.length(), SkTextEncoding::kUTF8, &r);
     float measuredWidth = r.width();
@@ -34,9 +36,10 @@ static YGSize measureWidget(YGNodeConstRef node, float width, YGMeasureMode widt
     return { measuredWidth, measuredHeight };
 }
 
-Label::Label() {
+Label::Label()
+{
     YGNodeSetContext(node, this);
-    YGNodeSetMeasureFunc(node, &measureWidget);
+    YGNodeSetMeasureFunc(node, &measure);
 }
 Label::~Label() {
 
@@ -64,6 +67,7 @@ void Label::paint(SkCanvas* canvas)
     SkPaint paint;
     paint.setAntiAlias(true);
     paint.setColor(SK_ColorRED);
+    font->setSize(fontSize * win->scaleFactor);
     canvas->drawSimpleText(text.data(), text.length(), SkTextEncoding::kUTF8, x - r.fLeft, y - r.fTop, *font.get(), paint);
 }
 
@@ -87,16 +91,21 @@ void Label::setText(const std::string& text)
     this->text = text;
 }
 
-void Label::setFont(const std::string& fontName, const float& fontSize, const FontWeight& fontWeight, const FontWidth& fontWidth, const FontSlant& fontSlant)
+void Label::setFont(const std::string& fontName, const FontWeight& fontWeight, const FontWidth& fontWidth, const FontSlant& fontSlant)
 {
     SkFontStyle fontStyle((SkFontStyle::Weight)fontWeight, (SkFontStyle::Width)fontWidth, (SkFontStyle::Slant)fontSlant);
     sk_sp<SkTypeface> typeFace = App::getFontMgr()->matchFamilyStyle(fontName.data(), fontStyle);    
-    font = std::make_shared<SkFont>(typeFace, fontSize);
+    font = std::make_shared<SkFont>(typeFace);
     font->setEdging(SkFont::Edging::kSubpixelAntiAlias);
     font->setSubpixel(true);
 }
 
 void Label::setFontSize(const float& fontSize)
 {
-    font->setSize(fontSize);
+    this->fontSize = fontSize;
+}
+
+float Label::getFontSize()
+{
+    return fontSize;
 }

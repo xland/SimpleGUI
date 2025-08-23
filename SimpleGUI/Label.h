@@ -17,15 +17,16 @@ public:
 	SkFont* getFont();
 	void setText(const std::string& text);
 	void setFont(const std::string& fontName = "Microsoft YaHei",
-		const float& fontSize = 14.f,
 		const FontWeight& fontWeight = FontWeight::Normal,
 		const FontWidth& fontWidth = FontWidth::Normal,
 		const FontSlant& fontSlant = FontSlant::Upright);
 	void setFontSize(const float& fontSize);
+	float getFontSize();
 protected:
 	
 private:
 	std::string text;
 	std::shared_ptr<SkFont> font;
+	float fontSize{16.f};
 };
 

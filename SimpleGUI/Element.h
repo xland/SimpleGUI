@@ -65,6 +65,7 @@ public:
 	friend class ElementBox;
 	friend class Label;
 	friend class TextBlock;
+	friend class WindowBase;
 protected:
 
 protected:

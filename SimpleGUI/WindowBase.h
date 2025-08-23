@@ -20,7 +20,8 @@ public:
 	void setTitle(const std::wstring& title);
 	const std::wstring& getTitle();
 	virtual void createNativeWindow() = 0;
-
+	void insertChild(const int& index, Element* ele) override;
+	void addChild(Element* ele) override;
 	const Position& getWindowPosition();
 	const Size& getWindowSize();
 	const Size getWindowClientSize();
@@ -33,6 +34,7 @@ public:
 	void resetWindowToScreenCenter();
 	Element* getElementByPosition(int x, int y);
 	HWND getHandle();
+	float getScaleFactor();
 public:
 	friend class TextArea;
 	friend class WindowBaseImpl;
@@ -54,7 +56,7 @@ private:
 	void windowMouseDown(const int& x, const int& y,const MouseButton& mouseBtn);
 	void windowMouseUp(const int& x, const int& y, const MouseButton& mouseBtn);
 	void paintArea();
-
+	void casecadeSetWindow(Element* ele);
 private:
 	/// <summary>
 	/// 窗口在屏幕上的位置

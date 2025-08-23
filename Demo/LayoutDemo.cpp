@@ -10,6 +10,7 @@ LayoutDemo::LayoutDemo()
     win->setWindowSize(1000, 800);
     win->setWindowToScreenCenter();
     win->setBackgroundColor(0xFF234567);
+    win->createNativeWindow();
 }
 LayoutDemo::~LayoutDemo() 
 {
@@ -18,7 +19,6 @@ LayoutDemo::~LayoutDemo()
 
 void LayoutDemo::leftRight()
 {
-    win->setFlexDirection(FlexDirection::Row);
     auto left = new Element();
     left->setSize(300, SizeNaN);
     left->setBackgroundColor(0xFF876543);
@@ -31,14 +31,11 @@ void LayoutDemo::leftRight()
     right->setBackgroundColor(0xFF9988aa);
     win->addChild(right);
 
-    win->createNativeWindow();
-    win->show();
+    win->setFlexDirection(FlexDirection::Row);
 }
 
 void LayoutDemo::topCenterBottom()
 {
-    win->setFlexDirection(FlexDirection::Column);
-
     auto top = new Element();
     top->setSize(SizeNaN, 80);
     top->setBackgroundColor(0xFF876543);
@@ -56,26 +53,24 @@ void LayoutDemo::topCenterBottom()
     bottom->setBackgroundColor(0xFF313951);
     win->addChild(bottom);
 
-    win->createNativeWindow();
-    win->show();
+    win->setFlexDirection(FlexDirection::Column);
 }
 
 void LayoutDemo::verticalHorizontalCenter()
 {
-    win->setAlignItems(Align::Center);
-    win->setJustifyContent(Justify::Center);
     auto ele = new Element();
     ele->setSize(100, 100);
     ele->setBackgroundColor(0xFF876543);
     ele->setCaption(true);
     win->addChild(ele);
 
-    win->createNativeWindow();
-    win->show();
+    win->setAlignItems(Align::Center);
+    win->setJustifyContent(Justify::Center);
 }
 
 void LayoutDemo::start()
 {
     //topCenterBottom();
     verticalHorizontalCenter();
+    win->show();
 }
