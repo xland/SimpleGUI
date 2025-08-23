@@ -48,7 +48,6 @@ protected:
 	std::unique_ptr<WindowBaseImpl> winImpl;
 	std::wstring title;
 	bool resizable{ true };
-	float scaleFactor{ 1.f };
 private:
 	static LRESULT CALLBACK routeWindowMsg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -70,5 +69,6 @@ private:
 	Size winSize;
 	Element* hoverEle{ nullptr };
 	Element* focusEle{ nullptr };
+	float scaleFactor{ 1.f };
 };
 

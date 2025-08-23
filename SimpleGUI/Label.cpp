@@ -15,7 +15,10 @@ static YGSize measure(YGNodeConstRef node, float width, YGMeasureMode widthMode,
     auto& text = label->getText();
     auto font = label->getFont();
     auto win = label->getWindow();
-    font->setSize(label->getFontSize() * win->getScaleFactor());
+    auto fs = label->getFontSize();
+    auto sf = win->getScaleFactor();
+    auto fontSize = fs * sf;
+    font->setSize(fontSize);
     SkRect r;
     font->measureText(text.data(), text.length(), SkTextEncoding::kUTF8, &r);
     float measuredWidth = r.width();

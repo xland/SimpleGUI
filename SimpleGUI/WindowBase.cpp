@@ -151,6 +151,9 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     case WM_SIZE:
     {
         int w{ LOWORD(lParam) }, h{ HIWORD(lParam) };
+        if (w == 0 || h == 0) {
+            return 0;
+        }
         setWindowSize(w, h);
         winImpl->reset();
         layout();
@@ -158,14 +161,15 @@ LRESULT CALLBACK WindowBase::windowMsgProc(HWND hwnd, UINT msg, WPARAM wParam, L
     }
     case WM_DPICHANGED:
     {
+        scaleFactor = LOWORD(wParam) / 96.0f;
         RECT* suggestedRect = reinterpret_cast<RECT*>(lParam);
-        SetWindowPos(hwnd, nullptr,
-            suggestedRect->left, suggestedRect->top,
-            suggestedRect->right - suggestedRect->left,
-            suggestedRect->bottom - suggestedRect->top,
+        auto w{ suggestedRect->right - suggestedRect->left };
+        auto h{ suggestedRect->bottom - suggestedRect->top };
+        SetWindowPos(hwnd, nullptr, suggestedRect->left, suggestedRect->top, w, h,
             SWP_NOZORDER | SWP_NOACTIVATE);
-        setScaleFactor();
-        winImpl->reset();
+        //setWindowSize(w, h);
+        //winImpl->reset();
+        //layout();
         return 0;
     }
     //case WM_SETCURSOR: {
